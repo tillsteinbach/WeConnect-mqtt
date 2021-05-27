@@ -143,8 +143,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
 
     def onWeConnectEvent(self, element, flags):
         if flags & addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED:
-            if isinstance(element.value, str) or isinstance(element.value, int) or isinstance(element.value, float) \
-                    or element.value is None:
+            if isinstance(element.value, (str, int, float)) or element.value is None:
                 convertedValue = element.value
             elif isinstance(element.value, Enum):
                 convertedValue = element.value.value
@@ -203,7 +202,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
             else:
                 LOG.error('MQTT message for new interval does not contain a number: %s', msg.payload.decode())
         else:
-            LOG.error(f'I don\'t understand message {msg.topic}: {msg.payload}')
+            LOG.error('I don\'t understand message %s: %s', msg.topic, msg.payload)
 
     def run(self):
         self.loop_start()
