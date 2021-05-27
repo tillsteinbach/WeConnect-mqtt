@@ -10,10 +10,12 @@ on:
     paths:
      - .github/workflows/build.yml
      - '**.py'
+     - '**requirements.txt'
   pull_request:
     paths:
      - .github/workflows/build.yml
      - '**.py'
+     - '**requirements.txt'
 
 jobs:
   build-python:
