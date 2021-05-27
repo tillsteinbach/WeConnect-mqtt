@@ -63,3 +63,4 @@ Please feel free to open an issue at [GitHub Issue page](https://github.com/till
 
 ## Related Projects:
 - [WeConnect-cli](https://github.com/tillsteinbach/WeConnect-cli): Commandline Interface to interact with the Volkswagen WeConnect Services
+- [WeConnect-python](https://github.com/tillsteinbach/WeConnect-python): Python API to connect to Volkswagen WeConnect Services
