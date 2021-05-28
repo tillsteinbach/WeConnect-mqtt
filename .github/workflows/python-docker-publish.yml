@@ -66,6 +66,7 @@ jobs:
             tillsteinbach/weconnect-mqtt
             ghcr.io/tillsteinbach/weconnect-mqtt
           tags: |
+            type=edge
             type=semver,pattern={{version}}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.1.0
