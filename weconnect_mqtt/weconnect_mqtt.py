@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import Enum
+import os
 import sys
 import argparse
 import netrc
@@ -59,9 +60,10 @@ def main():  # noqa: C901
                         help='Password for MQTT broker', required=False)
     parser.add_argument('-u', '--username', type=str, help='Username of Volkswagen id', required=False)
     parser.add_argument('-p', '--password', type=str, help='Password of Volkswagen id', required=False)
-    parser.add_argument('--netrc', type=str, help='File in netrc syntax providing login, default is the default netrc '
-                        'location (usually your users folder). Netrc is only used when username and password are not '
-                        'provided as arguments', default=None, required=False)
+    defaultNetRc = os.path.join(os.path.expanduser("~"), ".netrc")
+    parser.add_argument('--netrc', help=f'File in netrc syntax providing login (default: {defaultNetRc}).'
+                        ' Netrc is only used when username and password are not provided  as arguments',
+                        default=None, required=False)
     parser.add_argument('-i', '--interval', help='Query interval in seconds',
                               type=NumberRangeArgument(300, 3500), required=False, default=300)
     parser.add_argument('--prefix', help='MQTT topic prefix',
