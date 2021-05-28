@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Default value for .netrc file path shown in help
+- Improved error messages for missing netrc files
 
 ## [0.1.0] - 2021-05-27
 Initial release

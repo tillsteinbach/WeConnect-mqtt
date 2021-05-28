@@ -132,12 +132,20 @@ def main():  # noqa: C901
     if mqttusername is not None:
         mqttCLient.username_pw_set(username=mqttusername, password=mqttpassword)
 
-    mqttCLient.connectWeConnect(username=username, password=password)
-    mqttCLient.connect(args.mqttbroker, args.mqttport, 60)
-    # blocking run
-    mqttCLient.run()
-    mqttCLient.disconnect()
-    mqttCLient.weConnect.persistTokens()
+    try:
+        mqttCLient.connectWeConnect(username=username, password=password)
+        mqttCLient.connect(args.mqttbroker, args.mqttport, 60)
+        # blocking run
+        mqttCLient.run()
+        mqttCLient.disconnect()
+        mqttCLient.weConnect.persistTokens()
+    except weconnect.AuthentificationError as e:
+        LOG.critical('There was a problem when authenticating with WeConnect: %s', e)
+    except weconnect.APICompatibilityError as e:
+        LOG.critical('There was a problem when communicating with WeConnect.'
+                     ' If this problem persists please open a bug report: %s', e)
+    finally:
+        mqttCLient.disconnect()
 
 
 class WeConnectMQTTClient(paho.mqtt.client.Client):
