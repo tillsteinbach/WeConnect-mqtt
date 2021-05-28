@@ -17,10 +17,16 @@ If you want to integrate data from your weconnect enabled car a standard protoco
 You need to install python 3 on your system: [How to install python](https://realpython.com/installing-python/)
 
 ## How to install
-If you don't want to use WeConnect-mqtt, the easiest way is to obtain it from [PyPI](https://pypi.org/project/weconnect-mqtt/). Just install instead using:
+If you want to use WeConnect-mqtt, the easiest way is to obtain it from [PyPI](https://pypi.org/project/weconnect-mqtt/). Just install instead using:
 ```bash
 pip3 install weconnect-mqtt
 ```
+### Updates
+If you want to update WeConnect-mqtt, the easiest way is:
+```bash
+pip3 install weconnect-mqtt --upgrade
+```
+
 ## How to use
 Start weconnect-mqtt from the commandline:
 ```bash
