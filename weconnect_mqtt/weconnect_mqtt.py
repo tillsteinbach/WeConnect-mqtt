@@ -155,6 +155,9 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
         self.prefix = prefix
         self.interval = interval
 
+        self.on_connect = self.on_connect_callback
+        self.on_message = self.on_message_callback
+
     def disconnect(self, reasoncode=None, properties=None):
         self.publish(topic=f'{self.prefix}/mqtt/weconnectConnected', payload=False)
         super().disconnect(reasoncode, properties)
@@ -180,7 +183,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
 
             self.publish(topic=f'{self.prefix}{element.getGlobalAddress()}', payload=convertedValue)
 
-    def on_connect(self, mqttc, obj, flags, rc):  # pylint: disable=W0221,W0236,W0613
+    def on_connect_callback(self, mqttc, obj, flags, rc):
         if rc == 0:
             LOG.info('Connected to MQTT broker')
             self.publish(topic=f'{self.prefix}/mqtt/weconnectForceUpdate', payload=False)
@@ -208,7 +211,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
             print('Could not connect: %d', rc, file=sys.stderr)
             sys.exit(1)
 
-    def on_message(self, mqttc, obj, msg):  # pylint: disable=W0221,W0236,W0613
+    def on_message_callback(self, mqttc, obj, msg):
         if msg.topic == f'{self.prefix}/mqtt/weconnectForceUpdate':
             if msg.payload.lower() == b'True'.lower():
                 LOG.info('Update triggered by MQTT message')
