@@ -55,9 +55,6 @@ jobs:
   docker-deploy:
     needs: [python-deploy]
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: docker
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
@@ -96,6 +93,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2.4.0
         with:
+          context: docker
           push: (github.event_name == 'push' && (contains(github.ref, '/heads/master') || contains(github.ref, '/tags/v')))
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
