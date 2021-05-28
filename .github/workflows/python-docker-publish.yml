@@ -37,13 +37,13 @@ jobs:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-weconnect-mqtt-${{ github.sha }}
       - name: Login to DockerHub
-        if: (github.event_name == 'push' && (contains(github.ref, '/heads/main') || contains(github.ref, '/tags/v')))
+        #if: (github.event_name == 'push' && (contains(github.ref, '/heads/main') || contains(github.ref, '/tags/v')))
         uses: docker/login-action@v1.9.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Login to GitHub Container Registry
-        if: (github.event_name == 'push' && (contains(github.ref, '/heads/main') || contains(github.ref, '/tags/v')))
+        #if: (github.event_name == 'push' && (contains(github.ref, '/heads/main') || contains(github.ref, '/tags/v')))
         uses: docker/login-action@v1.9.0
         with:
           registry: ghcr.io
@@ -54,7 +54,8 @@ jobs:
         uses: docker/build-push-action@v2.5.0
         with:
           context: docker
-          push: (github.event_name == 'push' && (contains(github.ref, '/heads/main') || contains(github.ref, '/tags/v')))
+          push: true
+          #push: (github.event_name == 'push' && (contains(github.ref, '/heads/main') || contains(github.ref, '/tags/v')))
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
