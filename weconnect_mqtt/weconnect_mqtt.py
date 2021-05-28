@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 import os
 import sys
@@ -170,7 +170,8 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
     def updateWeConnect(self):
         LOG.info('Update data from WeConnect')
         self.weConnect.update()
-        self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdated', payload=str(datetime.now()))
+        self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdated',
+                     payload=datetime.utcnow().replace(microsecond=0, tzinfo=timezone.utc).isoformat())
 
     def onWeConnectEvent(self, element, flags):
         if flags & addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED:
