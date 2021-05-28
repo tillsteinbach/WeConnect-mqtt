@@ -79,7 +79,15 @@ def main():  # noqa: C901
     else:
         try:
             secrets = netrc.netrc(file=args.netrc)
-            username, _, password = secrets.authenticators("volkswagen.de")
+            secret = secrets.authenticators("volkswagen.de")
+            username, _, password = secret
+        except TypeError:
+            if not args.username:
+                LOG.error('volkswagen.de entry was not found in .netrc file. Create it or provide at least a username'
+                          ' with --username')
+                sys.exit(1)
+            username = args.username
+            password = getpass.getpass()
         except FileNotFoundError:
             if not args.username:
                 LOG.error('.netrc file was not found. Create it or provide at least a username with --username')
