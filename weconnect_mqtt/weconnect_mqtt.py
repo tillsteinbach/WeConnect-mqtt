@@ -79,20 +79,25 @@ def main():  # noqa: C901
         username = args.username
         password = args.password
     else:
+        if args.netrc is not None:
+            netRcFilename = args.netrc
+        else:
+            netRcFilename = defaultNetRc
         try:
             secrets = netrc.netrc(file=args.netrc)
             secret = secrets.authenticators("volkswagen.de")
             username, _, password = secret
         except TypeError:
             if not args.username:
-                LOG.error('volkswagen.de entry was not found in .netrc file. Create it or provide at least a username'
-                          ' with --username')
+                LOG.error('volkswagen.de entry was not found in %s netrc-file. Create it or provide at least a username'
+                          ' with --username', netRcFilename)
                 sys.exit(1)
             username = args.username
             password = getpass.getpass()
         except FileNotFoundError:
             if not args.username:
-                LOG.error('.netrc file was not found. Create it or provide at least a username with --username')
+                LOG.error('%s netrc-file was not found. Create it or provide at least a username with --username',
+                          netRcFilename)
                 sys.exit(1)
             username = args.username
             password = getpass.getpass()
@@ -105,6 +110,10 @@ def main():  # noqa: C901
         mqttpassword = args.mqttpassword
 
     if mqttusername is None and mqttpassword is None:
+        if args.netrc is not None:
+            netRcFilename = args.netrc
+        else:
+            netRcFilename = defaultNetRc
         try:
             secrets = netrc.netrc(file=args.netrc)
             authenticator = secrets.authenticators(args.mqttbroker)
@@ -112,7 +121,8 @@ def main():  # noqa: C901
                 mqttusername, _, mqttpassword = authenticator
         except FileNotFoundError:
             if args.netrc is not None:
-                LOG.error('Provided .netrc file was not found.')
+                LOG.error('%s netrc-file was not found. Create it or provide at least a username with --username',
+                          netRcFilename)
                 sys.exit(1)
 
     logging.basicConfig(level=logging.INFO)

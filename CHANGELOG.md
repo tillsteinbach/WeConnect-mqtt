@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Fixed
+- Improved error messages for missing netrc files
+
 ### Added
 - Default value for .netrc file path shown in help
 
