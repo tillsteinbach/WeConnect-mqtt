@@ -185,6 +185,10 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
             self.publish(topic=f'{self.prefix}{element.getGlobalAddress()}', payload=convertedValue)
 
     def on_connect_callback(self, mqttc, obj, flags, rc):
+        del mqttc  # unused
+        del obj  # unused
+        del flags  # unused
+
         if rc == 0:
             LOG.info('Connected to MQTT broker')
             self.publish(topic=f'{self.prefix}/mqtt/weconnectForceUpdate', payload=False)
@@ -213,6 +217,9 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
             sys.exit(1)
 
     def on_message_callback(self, mqttc, obj, msg):
+        del mqttc  # unused
+        del obj  # unused
+
         if msg.topic == f'{self.prefix}/mqtt/weconnectForceUpdate':
             if msg.payload.lower() == b'True'.lower():
                 LOG.info('Update triggered by MQTT message')

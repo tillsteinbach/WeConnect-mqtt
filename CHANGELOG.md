@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Fixed
+- Correctly use timezone
 
 ## [0.2.0] - 2021-05-28
 ### Fixed
