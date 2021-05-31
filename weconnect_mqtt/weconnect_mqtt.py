@@ -181,7 +181,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
                 convertedValue = element.value.value
             else:
                 convertedValue = str(element.value)
-
+            LOG.debug('%s%s, value changed: new value is: %s', self.prefix, element.getGlobalAddress(), convertedValue)
             self.publish(topic=f'{self.prefix}{element.getGlobalAddress()}', payload=convertedValue)
 
     def on_connect_callback(self, mqttc, obj, flags, rc):
