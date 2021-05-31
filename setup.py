@@ -32,7 +32,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Intended Audience :: End Users/Desktop',
         'Intended Audience :: System Administrators',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Utilities',
         'Topic :: System :: Monitoring',
         'Topic :: Home Automation',
