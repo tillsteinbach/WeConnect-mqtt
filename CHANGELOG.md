@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [0.3.0] - 2021-05-31
 ### Added
 - More options for MQTT connection (keepalive, tls, ...)
 
@@ -23,7 +25,8 @@ All notable changes to this project will be documented in this file.
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.2.6...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.3.0
 [0.2.6]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.2.6
 [0.2.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.2.0
 [0.1.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.1.0
