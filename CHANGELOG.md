@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
-## [0.2.1] - 2021-05-31
+## [0.2.6] - 2021-05-31
 ### Fixed
 - Correctly use timezone
 - Fix problem with caching
@@ -20,7 +20,7 @@ All notable changes to this project will be documented in this file.
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.2.1...HEAD
-[0.2.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.2.1
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.2.6...HEAD
+[0.2.6]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.2.6
 [0.2.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.2.0
 [0.1.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.1.0
