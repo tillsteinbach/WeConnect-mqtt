@@ -63,7 +63,7 @@ jobs:
       - name: Wait for PIPY to have the version available
         run: |
           while ! pip3 download weconnect-mqtt==${{ env.version }} > /dev/null; do sleep 10; done
-        shell: bash
+        shell: bash {0}
       - name: Checkout
         uses: actions/checkout@v2.3.4
       - name: Docker meta
