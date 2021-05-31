@@ -7,6 +7,7 @@ import netrc
 import getpass
 import logging
 import time
+import ssl
 
 import paho.mqtt.client
 
@@ -46,18 +47,33 @@ class NumberRangeArgument:
         return argparse.ArgumentTypeError('Must be a number')
 
 
-def main():  # noqa: C901
+def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statements
     parser = argparse.ArgumentParser(
         prog='weconnect-mqtt',
         description='Commandline Interface to interact with the Volkswagen WeConnect Services')
     parser.add_argument('--version', action='version',
                         version='%(prog)s {version}'.format(version=__version__))
     parser.add_argument('--mqttbroker', type=str, help='Address of MQTT Broker to connect to', required=True)
-    parser.add_argument('--mqttport', type=str, help='Port of MQTT Broker to connect to', required=False, default=1883)
+    parser.add_argument('--mqttport', type=str, help='Port of MQTT Broker. Default is 1883 (8883 for TLS)',
+                        required=False, default=None)
+    parser.add_argument('--mqttclientid', required=False, default=None, help='Id of the client. Default is a random id')
+    parser.add_argument('-k', '--mqttkeepalive', required=False, type=int, default=60,
+                        help='Time between keep-alive messages')
     parser.add_argument('-mu', '--mqtt-username', type=str, dest='mqttusername',
                         help='Username for MQTT broker', required=False)
     parser.add_argument('-mp', '--mqtt-password', type=str, dest='mqttpassword',
                         help='Password for MQTT broker', required=False)
+    parser.add_argument('--transport', required=False, default='tcp', choices=["tcp", 'websockets'],
+                        help='EXPERIMENTAL support for websockets transport')
+    parser.add_argument('-s', '--use-tls', action='store_true', help='EXPERIMENTAL')
+    parser.add_argument('--insecure', action='store_true', help='EXPERIMENTAL')
+    parser.add_argument('--cacerts', required=False, default=None, help='EXPERIMENTAL path to the Certificate Authority'
+                        ' certificate files that are to be treated as trusted by this client')
+    parser.add_argument('--cert', required=False, default=None, help='EXPERIMENTAL PEM encoded client certificate')
+    parser.add_argument('--key', required=False, default=None, help='EXPERIMENTAL PEM encoded client private key')
+    parser.add_argument('--tls-version', required=False, default=None, choices=['tlsv1.2', 'tlsv1.1', 'tlsv1'],
+                        help='EXPERIMENTAL TLS protocol version')
+
     parser.add_argument('-u', '--username', type=str, help='Username of Volkswagen id', required=False)
     parser.add_argument('-p', '--password', type=str, help='Password of Volkswagen id', required=False)
     defaultNetRc = os.path.join(os.path.expanduser("~"), ".netrc")
@@ -71,6 +87,16 @@ def main():  # noqa: C901
     parser.add_argument('-v', '--verbose', action="append_const", const=-1,)
 
     args = parser.parse_args()
+
+    usetls = args.use_tls
+    if args.cacerts:
+        usetls = True
+
+    if args.mqttport is None:
+        if usetls:
+            args.mqttport = 8883
+        else:
+            args.mqttport = 1883
 
     username = None
     password = None
@@ -127,18 +153,52 @@ def main():  # noqa: C901
 
     logging.basicConfig(level=logging.INFO)
 
-    mqttCLient = WeConnectMQTTClient(interval=args.interval, prefix=args.prefix)
+    mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, transport=args.transport, interval=args.interval,
+                                     prefix=args.prefix)
+    mqttCLient.enable_logger()
+
+    if usetls:
+        if args.tls_version == "tlsv1.2":
+            tlsVersion = ssl.PROTOCOL_TLSv1_2
+        elif args.tls_version == "tlsv1.1":
+            tlsVersion = ssl.PROTOCOL_TLSv1_1
+        elif args.tls_version == "tlsv1":
+            tlsVersion = ssl.PROTOCOL_TLSv1
+        elif args.tls_version is None:
+            tlsVersion = None
+        else:
+            LOG.warning('Unknown TLS version %s - ignoring', args.tls_version)
+            tlsVersion = None
+
+        if not args.insecure:
+            certRequired = ssl.CERT_REQUIRED
+        else:
+            certRequired = ssl.CERT_NONE
+
+        mqttCLient.tls_set(ca_certs=args.cacerts, certfile=args.cert, keyfile=args.key, cert_reqs=certRequired,
+                           tls_version=tlsVersion)
+        if args.insecure:
+            mqttCLient.tls_insecure_set(True)
 
     if mqttusername is not None:
         mqttCLient.username_pw_set(username=mqttusername, password=mqttpassword)
 
     try:
         mqttCLient.connectWeConnect(username=username, password=password)
-        mqttCLient.connect(args.mqttbroker, args.mqttport, 60)
+        while True:
+            try:
+                mqttCLient.connect(args.mqttbroker, args.mqttport, args.mqttkeepalive)
+                break
+            except ConnectionRefusedError as e:
+                LOG.error('Could not connect to MQTT-Server: %s, will retry in 10 seconds', e)
+                time.sleep(10)
+
         # blocking run
         mqttCLient.run()
         mqttCLient.disconnect()
         mqttCLient.weConnect.persistTokens()
+    except KeyboardInterrupt:
+        pass
     except weconnect.AuthentificationError as e:
         LOG.critical('There was a problem when authenticating with WeConnect: %s', e)
     except weconnect.APICompatibilityError as e:
@@ -149,17 +209,22 @@ def main():  # noqa: C901
 
 
 class WeConnectMQTTClient(paho.mqtt.client.Client):
-    def __init__(self, interval, prefix='weconnect/0'):
-        super().__init__()
+    def __init__(self, clientId=None, transport='tcp', interval=300, prefix='weconnect/0'):
+        super().__init__(client_id=clientId, transport=transport)
         self.weConnect = None
         self.prefix = prefix
         self.interval = interval
 
         self.on_connect = self.on_connect_callback
         self.on_message = self.on_message_callback
+        self.on_disconnect = self.on_disconnect_callback
+
+        self.will_set(topic=f'{self.prefix}/mqtt/weconnectConnected', qos=1, retain=True, payload=False)
 
     def disconnect(self, reasoncode=None, properties=None):
-        self.publish(topic=f'{self.prefix}/mqtt/weconnectConnected', payload=False)
+        disconectPublish = self.publish(topic=f'{self.prefix}/mqtt/weconnectConnected', qos=1, retain=True,
+                                        payload=False)
+        disconectPublish.wait_for_publish()
         super().disconnect(reasoncode, properties)
 
     def connectWeConnect(self, username, password):
@@ -170,7 +235,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
     def updateWeConnect(self):
         LOG.info('Update data from WeConnect')
         self.weConnect.update()
-        self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdated',
+        self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdated', qos=1, retain=True,
                      payload=datetime.utcnow().replace(microsecond=0, tzinfo=timezone.utc).isoformat())
 
     def onWeConnectEvent(self, element, flags):
@@ -182,7 +247,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
             else:
                 convertedValue = str(element.value)
             LOG.debug('%s%s, value changed: new value is: %s', self.prefix, element.getGlobalAddress(), convertedValue)
-            self.publish(topic=f'{self.prefix}{element.getGlobalAddress()}', payload=convertedValue)
+            self.publish(topic=f'{self.prefix}{element.getGlobalAddress()}', qos=1, retain=True, payload=convertedValue)
 
     def on_connect_callback(self, mqttc, obj, flags, rc):
         del mqttc  # unused
@@ -191,13 +256,14 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
 
         if rc == 0:
             LOG.info('Connected to MQTT broker')
-            self.publish(topic=f'{self.prefix}/mqtt/weconnectForceUpdate', payload=False)
-            self.subscribe(f'{self.prefix}/mqtt/weconnectForceUpdate')
+            self.publish(topic=f'{self.prefix}/mqtt/weconnectForceUpdate', qos=1, payload=False)
+            self.subscribe(f'{self.prefix}/mqtt/weconnectForceUpdate', qos=2)
 
-            self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdateInterval_s', payload=self.interval)
-            self.subscribe(f'{self.prefix}/mqtt/weconnectUpdateInterval_s')
+            self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdateInterval_s', qos=1, retain=True,
+                         payload=self.interval)
+            self.subscribe(f'{self.prefix}/mqtt/weconnectUpdateInterval_s', qos=1)
 
-            self.publish(topic=f'{self.prefix}/mqtt/weconnectConnected', payload=True)
+            self.publish(topic=f'{self.prefix}/mqtt/weconnectConnected', qos=1, retain=True, payload=True)
 
             self.updateWeConnect()
         elif rc == 1:
@@ -216,6 +282,16 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
             print('Could not connect: %d', rc, file=sys.stderr)
             sys.exit(1)
 
+    def on_disconnect_callback(self, client, userdata, rc):
+        del client
+        del userdata
+
+        if rc == 0:
+            LOG.info('Client successfully disconnected')
+        else:
+            LOG.info('Client unexpectedly disconnected (%d), trying to reconnect', rc)
+            self.reconnect()
+
     def on_message_callback(self, mqttc, obj, msg):
         del mqttc  # unused
         del obj  # unused
@@ -224,17 +300,19 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
             if msg.payload.lower() == b'True'.lower():
                 LOG.info('Update triggered by MQTT message')
                 self.updateWeConnect()
-                self.publish(topic=f'{self.prefix}/mqtt/weconnectForceUpdate', payload=False)
+                self.publish(topic=f'{self.prefix}/mqtt/weconnectForceUpdate', qos=2, payload=False)
         elif msg.topic == f'{self.prefix}/mqtt/weconnectUpdateInterval_s':
             if str(msg.payload.decode()).isnumeric():
                 newInterval = int(msg.payload)
                 if newInterval < 300:
                     LOG.error('New intervall of %ss by MQTT message is too low. Minimum is 300s', msg.payload.decode())
-                    self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdateInterval_s', payload=self.interval)
+                    self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdateInterval_s', qos=1, retain=True,
+                                 payload=self.interval)
                 elif newInterval > 3500:
                     LOG.error('New intervall of %ss by MQTT message is too large. Maximum is 3500s',
                               msg.payload.decode())
-                    self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdateInterval_s', payload=self.interval)
+                    self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdateInterval_s', qos=1, retain=True,
+                                 payload=self.interval)
                 else:
                     self.interval = newInterval
                     LOG.info('New intervall set to %ds by MQTT message', self.interval)

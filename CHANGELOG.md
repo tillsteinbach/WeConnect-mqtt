@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+- More options for MQTT connection (keepalive, tls, ...)
+
 ## [0.2.6] - 2021-05-31
 ### Fixed
 - Correctly use timezone
