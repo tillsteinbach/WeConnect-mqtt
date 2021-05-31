@@ -49,7 +49,21 @@ jobs:
   docker-deploy:
     needs: [python-deploy]
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
+      - name: Version from input
+        if: github.event_name != 'push'
+        run: |
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+      - name: Version from pushed tag
+        if: github.event_name == 'push'
+        run: |
+          # from refs/tags/v1.2.3 get 1.2.3
+          echo "version=$(echo $GITHUB_REF | sed 's#.*/v##')" >> $GITHUB_ENV
+      - name: Wait for PIPY to have the version available
+        run: |
+          while ! pip3 download weconnect-mqtt==${{ env.version }} > /dev/null; do sleep 10; done
+        shell: bash
       - name: Checkout
         uses: actions/checkout@v2.3.4
       - name: Docker meta
