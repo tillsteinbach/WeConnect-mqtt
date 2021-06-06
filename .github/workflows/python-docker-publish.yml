@@ -63,7 +63,7 @@ jobs:
       - name: Wait for PIPY to have the version available
         run: |
           pip3 download weconnect-mqtt==${{ env.version }} > /dev/null
-          while [ $? -ne 0 ]; do sleep 10; !!; done
+          while [ $? -ne 0 ]; do sleep 10; pip3 download weconnect-mqtt==${{ env.version }}; done
         shell: bash {0}
       - name: Checkout
         uses: actions/checkout@v2.3.4
