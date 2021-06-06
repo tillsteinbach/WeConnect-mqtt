@@ -11,7 +11,7 @@ import ssl
 
 import paho.mqtt.client
 
-from weconnect import weconnect, addressable
+from weconnect import weconnect, addressable, errors
 
 from .__version import __version__
 
@@ -230,13 +230,19 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
     def connectWeConnect(self, username, password):
         LOG.info('Connect to WeConnect')
         self.weConnect = weconnect.WeConnect(username=username, password=password, updateAfterLogin=False)
-        self.weConnect.addObserver(self.onWeConnectEvent, addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED)
+        self.weConnect.addObserver(self.onWeConnectEvent, addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                   priority=addressable.AddressableLeaf.ObserverPriority.USER_MID)
 
     def updateWeConnect(self):
         LOG.info('Update data from WeConnect')
-        self.weConnect.update()
-        self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdated', qos=1, retain=True,
-                     payload=datetime.utcnow().replace(microsecond=0, tzinfo=timezone.utc).isoformat())
+        try:
+            self.weConnect.update()
+            self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdated', qos=1, retain=True,
+                         payload=datetime.utcnow().replace(microsecond=0, tzinfo=timezone.utc).isoformat())
+        except errors.RetrievalError:
+            LOG.info('Retrieval error during update. Will try again after configured interval')
+        except errors.APICompatibilityError:
+            LOG.info('API compatibility error during update. Will try again after configured interval')
 
     def onWeConnectEvent(self, element, flags):
         if flags & addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED:
@@ -248,6 +254,9 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
                 convertedValue = str(element.value)
             LOG.debug('%s%s, value changed: new value is: %s', self.prefix, element.getGlobalAddress(), convertedValue)
             self.publish(topic=f'{self.prefix}{element.getGlobalAddress()}', qos=1, retain=True, payload=convertedValue)
+        elif flags & addressable.AddressableLeaf.ObserverEvent.DISABLED:
+            LOG.debug('%s%s, value is diabled', self.prefix, element.getGlobalAddress())
+            self.publish(topic=f'{self.prefix}{element.getGlobalAddress()}', qos=1, retain=True, payload='')
 
     def on_connect_callback(self, mqttc, obj, flags, rc):
         del mqttc  # unused
