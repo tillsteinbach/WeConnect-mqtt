@@ -62,9 +62,8 @@ jobs:
           echo "version=$(echo $GITHUB_REF | sed 's#.*/v##')" >> $GITHUB_ENV
       - name: Wait for PIPY to have the version available
         run: |
-          set +e
-          while ! pip3 download weconnect-mqtt==${{ env.version }} > /dev/null; do sleep 10; done
-          set -e
+          pip3 download weconnect-mqtt==${{ env.version }} > /dev/null
+          while [ $? -ne 0 ]; do sleep 10; !!; done
         shell: bash {0}
       - name: Checkout
         uses: actions/checkout@v2.3.4
