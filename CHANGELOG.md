@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.4.0] - 2021-06-06
+### Added
+Send empty message when topic is disabled
+### Changed
+- Bump API to 0.4.1
+
+### Fixed
+- Crash when server responds with unexpected status code
+
 ## [0.3.1] - 2021-06-02
 ### Changed
 - Use API version 0.3.2
@@ -28,7 +37,8 @@ All notable changes to this project will be documented in this file.
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.3.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.4.0
 [0.3.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.3.1
 [0.3.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.3.0
 [0.2.6]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.2.6
