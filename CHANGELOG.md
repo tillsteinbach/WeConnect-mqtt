@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+- no changes so far
+## [0.5.1] - 2021-06-09
+### Changed
+- Update API version to 0.5.1
+
 ## [0.5.0] - 2021-06-09
 ### Added
 - Possibility to change settings and control the vehicle through MQTT messages
