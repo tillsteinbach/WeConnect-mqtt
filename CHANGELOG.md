@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+- Possibility to change settings and control the vehicle through MQTT messages
+
+### Changed
+- API updated to 0.5.0
+
 ## [0.4.0] - 2021-06-06
 ### Added
 Send empty message when topic is disabled

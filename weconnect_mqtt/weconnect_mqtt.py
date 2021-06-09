@@ -200,10 +200,13 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     except KeyboardInterrupt:
         pass
     except weconnect.AuthentificationError as e:
-        LOG.critical('There was a problem when authenticating with WeConnect: %s', e)
+        errorMessage = f'There was a problem when authenticating with WeConnect: {e}'
+        mqttCLient.setError(code=WeConnectErrors.AUTHENTIFICATION, message=errorMessage)
+        LOG.critical(errorMessage)
     except weconnect.APICompatibilityError as e:
-        LOG.critical('There was a problem when communicating with WeConnect.'
-                     ' If this problem persists please open a bug report: %s', e)
+        errorMessage = f'There was a problem when communicating with WeConnect.  If this problem persists please open a bug report: {e}'
+        mqttCLient.setError(code=WeConnectErrors.API_COMPATIBILITY, message=errorMessage)
+        LOG.critical(errorMessage)
     finally:
         mqttCLient.disconnect()
 
@@ -214,6 +217,8 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
         self.weConnect = None
         self.prefix = prefix
         self.interval = interval
+        self.connected = False
+        self.hasError = None
 
         self.on_connect = self.on_connect_callback
         self.on_message = self.on_message_callback
@@ -230,22 +235,37 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
     def connectWeConnect(self, username, password):
         LOG.info('Connect to WeConnect')
         self.weConnect = weconnect.WeConnect(username=username, password=password, updateAfterLogin=False)
-        self.weConnect.addObserver(self.onWeConnectEvent, addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+        self.weConnect.addObserver(self.onWeConnectEvent, addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED
+                                   | addressable.AddressableLeaf.ObserverEvent.ENABLED | addressable.AddressableLeaf.ObserverEvent.DISABLED,
                                    priority=addressable.AddressableLeaf.ObserverPriority.USER_MID)
+        self.setConnected(connected=True)
+        self.setError(code=WeConnectErrors.SUCCESS)
 
     def updateWeConnect(self):
         LOG.info('Update data from WeConnect')
         try:
             self.weConnect.update()
+            self.setConnected(connected=True)
+            self.setError(code=WeConnectErrors.SUCCESS)
             self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdated', qos=1, retain=True,
                          payload=datetime.utcnow().replace(microsecond=0, tzinfo=timezone.utc).isoformat())
         except errors.RetrievalError:
-            LOG.info('Retrieval error during update. Will try again after configured interval')
+            self.setConnected(connected=False)
+            errorMessage = f'Retrieval error during update. Will try again after configured interval of {self.interval}s'
+            self.setError(code=WeConnectErrors.RETRIEVAL_FAILED, message=errorMessage)
+            LOG.info(errorMessage)
         except errors.APICompatibilityError:
-            LOG.info('API compatibility error during update. Will try again after configured interval')
+            self.setConnected(connected=False)
+            errorMessage = f'API compatibility error during update. Will try again after configured interval of {self.interval}s'
+            self.setError(code=WeConnectErrors.API_COMPATIBILITY, message=errorMessage)
+            LOG.info(errorMessage)
 
     def onWeConnectEvent(self, element, flags):
-        if flags & addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED:
+        if flags & addressable.AddressableLeaf.ObserverEvent.ENABLED:
+            if isinstance(element, addressable.ChangeableAttribute):
+                LOG.debug('Subscribe for attribute %s%s', self.prefix, element.getGlobalAddress())
+                self.subscribe(f'{self.prefix}{element.getGlobalAddress()}', qos=1)
+        elif flags & addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED:
             if isinstance(element.value, (str, int, float)) or element.value is None:
                 convertedValue = element.value
             elif isinstance(element.value, Enum):
@@ -257,6 +277,22 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
         elif flags & addressable.AddressableLeaf.ObserverEvent.DISABLED:
             LOG.debug('%s%s, value is diabled', self.prefix, element.getGlobalAddress())
             self.publish(topic=f'{self.prefix}{element.getGlobalAddress()}', qos=1, retain=True, payload='')
+
+    def setConnected(self, connected=True):
+        if connected != self.connected:
+            self.publish(topic=f'{self.prefix}/mqtt/weconnectConnected', qos=1, retain=True, payload=connected)
+            self.connected = connected
+
+    def setError(self, code=None, message=''):
+        if code is None:
+            code = WeConnectErrors.SUCCESS
+        if code != WeConnectErrors.SUCCESS or message != '' or self.hasError is None or self.hasError:
+            self.publish(topic=f'{self.prefix}/mqtt/error/code', qos=1, retain=False, payload=code.value)
+            self.publish(topic=f'{self.prefix}/mqtt/error/message', qos=1, retain=False, payload=message)
+        if code != WeConnectErrors.SUCCESS:
+            self.hasError = True
+        else:
+            self.hasError = False
 
     def on_connect_callback(self, mqttc, obj, flags, rc):
         del mqttc  # unused
@@ -272,7 +308,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
                          payload=self.interval)
             self.subscribe(f'{self.prefix}/mqtt/weconnectUpdateInterval_s', qos=1)
 
-            self.publish(topic=f'{self.prefix}/mqtt/weconnectConnected', qos=1, retain=True, payload=True)
+            self.setConnected()
 
             self.updateWeConnect()
         elif rc == 1:
@@ -301,7 +337,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
             LOG.info('Client unexpectedly disconnected (%d), trying to reconnect', rc)
             self.reconnect()
 
-    def on_message_callback(self, mqttc, obj, msg):
+    def on_message_callback(self, mqttc, obj, msg):  # noqa: C901
         del mqttc  # unused
         del obj  # unused
 
@@ -314,21 +350,47 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
             if str(msg.payload.decode()).isnumeric():
                 newInterval = int(msg.payload)
                 if newInterval < 300:
-                    LOG.error('New intervall of %ss by MQTT message is too low. Minimum is 300s', msg.payload.decode())
+                    errorMessage = f'New intervall of {msg.payload.decode()}s by MQTT message is too low. Minimum is 300s'
                     self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdateInterval_s', qos=1, retain=True,
                                  payload=self.interval)
                 elif newInterval > 3500:
-                    LOG.error('New intervall of %ss by MQTT message is too large. Maximum is 3500s',
-                              msg.payload.decode())
+                    errorMessage = f'New intervall of {msg.payload.decode()}s by MQTT message is too large. Maximum is 3500s'
+                    self.setError(code=WeConnectErrors.INTERVAL_NOT_A_NUMBER, message=errorMessage)
+                    LOG.error(errorMessage)
                     self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdateInterval_s', qos=1, retain=True,
                                  payload=self.interval)
                 else:
                     self.interval = newInterval
                     LOG.info('New intervall set to %ds by MQTT message', self.interval)
             else:
-                LOG.error('MQTT message for new interval does not contain a number: %s', msg.payload.decode())
+                errorMessage = f'MQTT message for new interval does not contain a number: {msg.payload.decode()}'
+                self.setError(code=WeConnectErrors.INTERVAL_NOT_A_NUMBER, message=errorMessage)
+                LOG.error(errorMessage)
+                self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdateInterval_s', qos=1, retain=True, payload=self.interval)
         else:
-            LOG.error('I don\'t understand message %s: %s', msg.topic, msg.payload)
+            if msg.topic.startswith(self.prefix):
+                address = msg.topic[len(self.prefix):]
+                attribute = self.weConnect.getByAddressString(address)
+                if isinstance(attribute, addressable.ChangeableAttribute):
+                    try:
+                        attribute.value = msg.payload.decode()
+                        self.setError(code=WeConnectErrors.SUCCESS)
+                    except ValueError as valueError:
+                        errorMessage = f'Error setting value: {valueError}'
+                        self.setError(code=WeConnectErrors.SET_FORMAT, message=errorMessage)
+                        LOG.info(errorMessage)
+                    except errors.SetterError as setterError:
+                        errorMessage = f'Error setting value: {setterError}'
+                        self.setError(code=WeConnectErrors.SET_ERROR, message=errorMessage)
+                        LOG.info(errorMessage)
+                else:
+                    errorMessage = f'Trying to change item that is not a changeable attribute {msg.topic}: {msg.payload}'
+                    self.setError(code=WeConnectErrors.MESSAGE_NOT_UNDERSTOOD, message=errorMessage)
+                    LOG.error(errorMessage)
+            else:
+                errorMessage = f'I don\'t understand message {msg.topic}: {msg.payload}'
+                self.setError(code=WeConnectErrors.ATTRIBUTE_NOT_CHANGEABLE, message=errorMessage)
+                LOG.error(errorMessage)
 
     def run(self):
         self.loop_start()
@@ -338,3 +400,17 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
                 self.updateWeConnect()
         except KeyboardInterrupt:
             self.loop_stop(force=False)
+
+
+class WeConnectErrors(Enum):
+    SUCCESS = 0
+    ATTRIBUTE_NOT_CHANGEABLE = -1
+    MESSAGE_NOT_UNDERSTOOD = -2
+    INTERVAL_NOT_A_NUMBER = -3
+    INTERVAL_TOO_SMALL = -4
+    INTERVAL_TOO_LARGE = -5
+    RETRIEVAL_FAILED = -6
+    API_COMPATIBILITY = -7
+    AUTHENTIFICATION = -8
+    SET_FORMAT = -9
+    SET_ERROR = -10
