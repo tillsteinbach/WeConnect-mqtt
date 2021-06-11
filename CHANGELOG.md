@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - no changes so far
 
+## [0.6.0] - 2021-06-11
+### Added
+- Support for coUsers attribute
+
+### Changed
+- Update API version to 0.6.0
+
 ## [0.5.2] - 2021-06-10
 ### Changed
 - Update API version to 0.5.2 to fix bug with charging settings
