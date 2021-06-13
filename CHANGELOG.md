@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - no changes so far
 
+## [0.6.1] - 2021-06-13
+### Changed
+- Updating API to Version 0.6.1 to fix bug with obervers
+
 ## [0.6.0] - 2021-06-11
 ### Added
 - Support for coUsers attribute
@@ -61,7 +65,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.6.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.6.1...HEAD
+[0.6.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.6.1
 [0.6.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.6.0
 [0.5.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.5.2
 [0.5.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.5.1
