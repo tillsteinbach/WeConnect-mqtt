@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from enum import Enum
 import os
 import sys
@@ -84,9 +84,18 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
                               type=NumberRangeArgument(300, 3500), required=False, default=300)
     parser.add_argument('--prefix', help='MQTT topic prefix',
                         type=str, required=False, default='weconnect/0')
+    parser.add_argument('--ignore-for', dest='ignore', help='Ignore messages for first IGNORE seconds after subscribe to aviod '
+                        'retained messages from the broker to make changes to the car (default is 5s) if you don\'t want this behavious set to 0',
+                        type=int, required=False, default=5)
     parser.add_argument('-v', '--verbose', action="append_const", const=-1,)
 
     args = parser.parse_args()
+
+    logLevel = LOG_LEVELS.index(DEFAULT_LOG_LEVEL)
+    for adjustment in args.verbose or ():
+        logLevel = min(len(LOG_LEVELS) - 1, max(logLevel + adjustment, 0))
+
+    logging.basicConfig(level=LOG_LEVELS[logLevel])
 
     usetls = args.use_tls
     if args.cacerts:
@@ -151,10 +160,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
                           netRcFilename)
                 sys.exit(1)
 
-    logging.basicConfig(level=logging.INFO)
-
     mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, transport=args.transport, interval=args.interval,
-                                     prefix=args.prefix)
+                                     prefix=args.prefix, ignore=args.ignore)
     mqttCLient.enable_logger()
 
     if usetls:
@@ -212,17 +219,20 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
 
 
 class WeConnectMQTTClient(paho.mqtt.client.Client):
-    def __init__(self, clientId=None, transport='tcp', interval=300, prefix='weconnect/0'):
+    def __init__(self, clientId=None, transport='tcp', interval=300, prefix='weconnect/0', ignore=0):
         super().__init__(client_id=clientId, transport=transport)
         self.weConnect = None
         self.prefix = prefix
         self.interval = interval
         self.connected = False
         self.hasError = None
+        self.ignore = ignore
+        self.lastSubscribe = None
 
         self.on_connect = self.on_connect_callback
         self.on_message = self.on_message_callback
         self.on_disconnect = self.on_disconnect_callback
+        self.on_subscribe = self.on_subscribe_callback
 
         self.will_set(topic=f'{self.prefix}/mqtt/weconnectConnected', qos=1, retain=True, payload=False)
 
@@ -337,11 +347,22 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
             LOG.info('Client unexpectedly disconnected (%d), trying to reconnect', rc)
             self.reconnect()
 
+    def on_subscribe_callback(self, mqttc, obj, mid, granted_qos):
+        del mqttc  # unused
+        del obj  # unused
+        del mid  # unused
+        del granted_qos  # unused
+        self.lastSubscribe = datetime.now()
+        LOG.debug('sucessfully subscribed to topic')
+
     def on_message_callback(self, mqttc, obj, msg):  # noqa: C901
         del mqttc  # unused
         del obj  # unused
-
-        if msg.topic == f'{self.prefix}/mqtt/weconnectForceUpdate':
+        if self.ignore > 0 and self.lastSubscribe is not None and (datetime.now() - self.lastSubscribe) < timedelta(seconds=self.ignore):
+            LOG.info('ignoring message from broker as it is withing --ignore-for delta')
+        elif len(msg.payload) == 0:
+            LOG.debug('ignoring empty message')
+        elif msg.topic == f'{self.prefix}/mqtt/weconnectForceUpdate':
             if msg.payload.lower() == b'True'.lower():
                 LOG.info('Update triggered by MQTT message')
                 self.updateWeConnect()

@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - no changes so far
 
+## [0.6.2] - 2021-06-18
+### Fixed:
+- Fix for issue #6 when the broker publishes old messages after subscribe
+
+### Changed
+- Updating API to Version 0.6.2 fixing several small issues
+
 ## [0.6.1] - 2021-06-13
 ### Changed
 - Updating API to Version 0.6.1 to fix bug with obervers
@@ -65,7 +72,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.6.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.6.2...HEAD
+[0.6.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.6.2
 [0.6.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.6.1
 [0.6.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.6.0
 [0.5.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.5.2
