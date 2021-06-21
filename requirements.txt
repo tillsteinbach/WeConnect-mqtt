@@ -1,2 +1,2 @@
-weconnect==0.8.1
+weconnect==0.9.0
 paho-mqtt==1.5.1

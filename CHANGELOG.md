@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - no changes so far
 
+## [0.8.2] - 2021-06-21
+### Fixed
+- Potential problem with finding leaf elements by updating API to 0.8.2
+- Missing fail status for target operations by updating API to 0.9.0
+
 ## [0.8.1] - 2021-06-21
 ### Fixed
 - Wrong error message containing unused attribute
@@ -84,7 +89,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.8.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.8.2...HEAD
+[0.8.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.8.2
 [0.8.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.8.1
 [0.8.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.8.0
 [0.7.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.7.0
