@@ -78,7 +78,7 @@ jobs:
             type=edge
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{version}}
-            type=raw,value=${{ env.version }},enable=${{ !contains(github.ref, '.dev') }}
+            type=raw,value=${{ env.version }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
       - name: Setup Docker Buildx
