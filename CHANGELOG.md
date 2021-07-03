@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - no unreleased changes so far
 
+## [0.10.0] - 2021-07-03
+### Changed
+- Update API to 0.11.0
+
+### Fixed
+- More robust against null data in API response
+
 ## [0.9.0] - 2021-06-28
 ### Changed
 - Update API to 0.10.0 to use access token instead of id token
@@ -93,7 +100,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.9.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.10.0...HEAD
+[0.10.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.10.0
 [0.9.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.9.0
 [0.8.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.8.2
 [0.8.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.8.1
