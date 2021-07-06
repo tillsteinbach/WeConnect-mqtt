@@ -5,7 +5,15 @@ ENV PASSWORD=
 ENV BROKER_ADDRESS=
 ENV ADDITIONAL_PARAMETERS=
 
-RUN apk --no-cache add zlib-dev
+# Pillow depenencies
+RUN apk --no-cache add  jpeg-dev \
+                        zlib-dev \
+                        freetype-dev \
+                        lcms2-dev \
+                        openjpeg-dev \
+                        tiff-dev \
+                        tk-dev \
+                        tcl-dev
 
 RUN pip install weconnect-mqtt
 
