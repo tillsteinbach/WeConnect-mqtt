@@ -6,7 +6,8 @@ ENV BROKER_ADDRESS=
 ENV ADDITIONAL_PARAMETERS=
 
 # Pillow depenencies
-RUN apk --no-cache add  jpeg-dev \
+RUN apk --no-cache add  build-base \
+                        jpeg-dev \
                         zlib-dev \
                         freetype-dev \
                         lcms2-dev \
