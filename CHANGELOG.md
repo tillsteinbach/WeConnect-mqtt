@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - no unreleased changes so far
 
+## [0.11.2] - 2021-07-06
+### Changed
+- Make docker image smaller
+- Release docker image dev versions on edge tag
+
 ## [0.11.1] - 2021-07-06
 ### Fixed
 - Build error in Docker file
@@ -117,7 +122,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.11.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.11.2...HEAD
+[0.11.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.11.2
 [0.11.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.11.1
 [0.11.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.11.0
 [0.10.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.10.1
