@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - no unreleased changes so far
 
+## [0.11.0] - 2021-07-06
+### Added
+- Possibility to get data from charging stations with --chargingLocation and --chargingLocationRadius
+- Possibility to disable data for capabilities with --no-capabilities
+- Possibility to get ASCII ART car and status images (can be disabled with --no-pictures)
+
 ## [0.10.1] - 2021-07-03
 ### Fixed
 - Bug with addresses fixed in API 0.11.1
@@ -107,7 +113,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.10.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.11.0...HEAD
+[0.11.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.11.0
 [0.10.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.10.1
 [0.10.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.10.0
 [0.9.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.9.0

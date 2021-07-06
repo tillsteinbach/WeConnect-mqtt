@@ -61,6 +61,16 @@ password testpassword123
 ```
 You can also provide the location of the netrc file using the --netrc option
 
+### Charging stations
+You can also obtain data from charging stations by adding a location with e.g. `--chargingLocation 52.437132 10.796628` and a radius in meters with `--chargingLocationRadius=500`.
+Data for charging stations is mostly static, but you can see the current availability.
+
+### Disabling features
+You can disable data for the cars capabilities with `--no-capabilities`
+
+### ASCII Art vehicle images
+You can enable ASCII Art pictures of the cars with `--pictures`
+
 ## Tested with
 - Volkswagen ID.3 Modelyear 2021
 - Volkswagen Passat GTE Modelyear 2021

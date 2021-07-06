@@ -10,8 +10,10 @@ import time
 import ssl
 
 import paho.mqtt.client
+from PIL import Image
+import ascii_magic
 
-from weconnect import weconnect, addressable, errors
+from weconnect import weconnect, addressable, errors, util
 
 from .__version import __version__
 
@@ -88,6 +90,12 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
                         'retained messages from the broker to make changes to the car (default is 5s) if you don\'t want this behavious set to 0',
                         type=int, required=False, default=5)
     parser.add_argument('-v', '--verbose', action="append_const", const=-1,)
+    parser.add_argument('-l', '--chargingLocation', nargs=2, metavar=('latitude', 'longitude'), type=float,
+                        help='If set charging locations will be added to the result around the given coordinates')
+    parser.add_argument('--chargingLocationRadius', type=NumberRangeArgument(0, 100000),
+                        help='Radius in meters around the chargingLocation to search for chargers')
+    parser.add_argument('--no-capabilities', dest='noCapabilities', help='Do not add capabilities', action='store_true')
+    parser.add_argument('--pictures', help='Add ASCII art pictures', action='store_true')
 
     args = parser.parse_args()
 
@@ -161,7 +169,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
                 sys.exit(1)
 
     mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, transport=args.transport, interval=args.interval,
-                                     prefix=args.prefix, ignore=args.ignore)
+                                     prefix=args.prefix, ignore=args.ignore, updateCapabilities=(not args.noCapabilities),
+                                     updatePictures=args.pictures)
     mqttCLient.enable_logger()
 
     if usetls:
@@ -192,6 +201,19 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
 
     try:
         mqttCLient.connectWeConnect(username=username, password=password)
+
+        if args.chargingLocation is not None:
+            latitude, longitude = args.chargingLocation
+            if latitude < -90 or latitude > 90:
+                LOG.error('latitude must be between -90 and 90')
+                sys.exit(1)
+            if longitude < -180 or longitude > 180:
+                LOG.error('longitude must be between -180 and 180')
+                sys.exit(1)
+            mqttCLient.weConnect.latitude = latitude
+            mqttCLient.weConnect.longitude = longitude
+        mqttCLient.weConnect.searchRadius = args.chargingLocationRadius
+
         while True:
             try:
                 mqttCLient.connect(args.mqttbroker, args.mqttport, args.mqttkeepalive)
@@ -218,8 +240,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
         mqttCLient.disconnect()
 
 
-class WeConnectMQTTClient(paho.mqtt.client.Client):
-    def __init__(self, clientId=None, transport='tcp', interval=300, prefix='weconnect/0', ignore=0):
+class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-instance-attributes
+    def __init__(self, clientId=None, transport='tcp', interval=300, prefix='weconnect/0', ignore=0, updateCapabilities=True, updatePictures=True):
         super().__init__(client_id=clientId, transport=transport)
         self.weConnect = None
         self.prefix = prefix
@@ -228,6 +250,8 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
         self.hasError = None
         self.ignore = ignore
         self.lastSubscribe = None
+        self.updateCapabilities = updateCapabilities
+        self.updatePictures = updatePictures
 
         self.on_connect = self.on_connect_callback
         self.on_message = self.on_message_callback
@@ -244,7 +268,8 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
 
     def connectWeConnect(self, username, password):
         LOG.info('Connect to WeConnect')
-        self.weConnect = weconnect.WeConnect(username=username, password=password, updateAfterLogin=False)
+        self.weConnect = weconnect.WeConnect(username=username, password=password, updateAfterLogin=False, updateCapabilities=self.updateCapabilities,
+                                             updatePictures=self.updatePictures)
         self.weConnect.addObserver(self.onWeConnectEvent, addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED
                                    | addressable.AddressableLeaf.ObserverEvent.ENABLED | addressable.AddressableLeaf.ObserverEvent.DISABLED,
                                    priority=addressable.AddressableLeaf.ObserverPriority.USER_MID)
@@ -254,7 +279,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
     def updateWeConnect(self):
         LOG.info('Update data from WeConnect')
         try:
-            self.weConnect.update()
+            self.weConnect.update(updateCapabilities=self.updateCapabilities, updatePictures=self.updatePictures)
             self.setConnected(connected=True)
             self.setError(code=WeConnectErrors.SUCCESS)
             self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdated', qos=1, retain=True,
@@ -280,6 +305,8 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):
                 convertedValue = element.value
             elif isinstance(element.value, Enum):
                 convertedValue = element.value.value
+            elif isinstance(element.value, Image.Image):
+                convertedValue = util.imgToASCIIArt(element.value, columns=120, mode=ascii_magic.Modes.ASCII)
             else:
                 convertedValue = str(element.value)
             LOG.debug('%s%s, value changed: new value is: %s', self.prefix, element.getGlobalAddress(), convertedValue)
