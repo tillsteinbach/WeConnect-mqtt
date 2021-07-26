@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - no unreleased changes so far
 
+## [0.12.2] - 2021-07-26
+### Changed
+- Improved error message when user consent is missing
+- More robust against server side errors when refreshing the tokens
+- API updated to version 0.13.2
+
 ## [0.12.1] - 2021-07-26
 ### Fixed
 - Import of subpackages
@@ -143,7 +149,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.12.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.12.2...HEAD
+[0.12.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.12.2
 [0.12.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.12.1
 [0.12.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.12.0
 [0.11.4]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.11.4
