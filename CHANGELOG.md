@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - no unreleased changes so far
 
+## [0.12.0] - 2021-07-26
+### Added
+- Dummy for maintenance status (currently no data provided, only error messages)
+- Added attribute for chargeMode
+
+### Changed
+- More compact string formating
+- Changed python API to 0.13.0
+
 ## [0.11.4] - 2021-07-25
 ### Fixed
 - Fixed crash due to 404 error when retrieving parking position for cars that don't provide parking positions
@@ -130,7 +139,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.11.4...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.12.0...HEAD
+[0.12.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.12.0
 [0.11.4]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.11.4
 [0.11.3]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.11.3
 [0.11.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.11.2
