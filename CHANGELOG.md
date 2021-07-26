@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - no unreleased changes so far
 
+## [0.12.1] - 2021-07-26
+### Fixed
+- Import of subpackages
+
 ## [0.12.0] - 2021-07-26
 ### Added
 - Dummy for maintenance status (currently no data provided, only error messages)
@@ -139,7 +143,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.12.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.12.1...HEAD
+[0.12.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.12.1
 [0.12.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.12.0
 [0.11.4]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.11.4
 [0.11.3]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.11.3
