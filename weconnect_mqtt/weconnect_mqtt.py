@@ -14,6 +14,7 @@ from PIL import Image
 import ascii_magic
 
 from weconnect import weconnect, addressable, errors, util
+from weconnect.__version import __version__ as __weconnect_version__
 
 from .__version import __version__
 
@@ -54,7 +55,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
         prog='weconnect-mqtt',
         description='Commandline Interface to interact with the Volkswagen WeConnect Services')
     parser.add_argument('--version', action='version',
-                        version='%(prog)s {version}'.format(version=__version__))
+                        version='%(prog)s {version} (using WeConnect-python {weversion})'.format(version=__version__, weversion=__weconnect_version__))
     parser.add_argument('--mqttbroker', type=str, help='Address of MQTT Broker to connect to', required=True)
     parser.add_argument('--mqttport', type=str, help='Port of MQTT Broker. Default is 1883 (8883 for TLS)',
                         required=False, default=None)

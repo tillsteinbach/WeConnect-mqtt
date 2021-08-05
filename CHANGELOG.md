@@ -2,7 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
-- no unreleased changes so far
+### Changed
+- Better output of version (adds WeConnect-python version to string)
 
 ## [0.13.1] - 2021-07-30
 ### Fixed
