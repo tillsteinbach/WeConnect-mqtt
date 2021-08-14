@@ -2,8 +2,15 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+- No unreleased changes so far
+
+## [0.13.2] - 2021-08-14
+### Fixed
+- Bug when downloading pictures fails
+
 ### Changed
 - Better output of version (adds WeConnect-python version to string)
+- Updated API to 0.18.3
 
 ## [0.13.1] - 2021-07-30
 ### Fixed
@@ -163,7 +170,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.13.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.13.2...HEAD
+[0.13.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.13.2
 [0.13.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.13.1
 [0.13.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.13.0
 [0.12.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.12.2
