@@ -107,6 +107,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
         logLevel = min(len(LOG_LEVELS) - 1, max(logLevel + adjustment, 0))
 
     logging.basicConfig(level=LOG_LEVELS[logLevel])
+    LOG.info('WeConnect-mqtt %s (using WeConnect-python %s)', __version__, __weconnect_version__)
 
     usetls = args.use_tls
     if args.cacerts:
