@@ -85,6 +85,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
                         default=None, required=False)
     parser.add_argument('-i', '--interval', help='Query interval in seconds',
                               type=NumberRangeArgument(300, 3500), required=False, default=300)
+    parser.add_argument('--picture-cache-interval', dest='pictureCache', help='Picture download interval in seconds, this does not influence the interval in'
+                        ' which the status picture is updated', type=NumberRangeArgument(1), required=False, default=86400)
     parser.add_argument('--prefix', help='MQTT topic prefix',
                         type=str, required=False, default='weconnect/0')
     parser.add_argument('--ignore-for', dest='ignore', help='Ignore messages for first IGNORE seconds after subscribe to aviod '
@@ -201,7 +203,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
         mqttCLient.username_pw_set(username=mqttusername, password=mqttpassword)
 
     try:
-        mqttCLient.connectWeConnect(username=username, password=password)
+        mqttCLient.connectWeConnect(username=username, password=password, maxAgePictures=args.pictureCache)
 
         if args.chargingLocation is not None:
             latitude, longitude = args.chargingLocation
@@ -267,10 +269,10 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         disconectPublish.wait_for_publish()
         super().disconnect(reasoncode, properties)
 
-    def connectWeConnect(self, username, password):
+    def connectWeConnect(self, username, password, maxAgePictures):
         LOG.info('Connect to WeConnect')
         self.weConnect = weconnect.WeConnect(username=username, password=password, updateAfterLogin=False, updateCapabilities=self.updateCapabilities,
-                                             updatePictures=self.updatePictures)
+                                             updatePictures=self.updatePictures, maxAgePictures=maxAgePictures)
         self.weConnect.addObserver(self.onWeConnectEvent, addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED
                                    | addressable.AddressableLeaf.ObserverEvent.ENABLED | addressable.AddressableLeaf.ObserverEvent.DISABLED,
                                    priority=addressable.AddressableLeaf.ObserverPriority.USER_MID)

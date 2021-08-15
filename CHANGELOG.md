@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.14.0] - 2021-08-15
+### Added
+- Possibility to set caching time for picture downloads seperately
+
+### Changed
+- Longer caching (24h default) for picture downloads
+
 ## [0.13.2] - 2021-08-14
 ### Fixed
 - Bug when downloading pictures fails
@@ -170,7 +177,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.13.2...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.14.0...HEAD
+[0.14.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.0
 [0.13.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.13.2
 [0.13.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.13.1
 [0.13.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.13.0
