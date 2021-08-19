@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.14.2] - 2021-08-19
+### Fixed
+- Parking position after weconnect API change
+
+### Changed
+- API version to 19.1
+
 ## [0.14.1] - 2021-08-15
 ### Added
 - Output of version information after startup
@@ -181,7 +188,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.14.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.14.2...HEAD
+[0.14.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.2
 [0.14.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.1
 [0.14.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.0
 [0.13.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.13.2
