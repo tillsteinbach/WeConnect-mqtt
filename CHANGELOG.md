@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.14.3] - 2021-08-20
+### Fixed
+- Fixed bad gateway error with parking position when car is driving
+
+### Changed
+- API version to 19.2
+
 ## [0.14.2] - 2021-08-19
 ### Fixed
 - Parking position after weconnect API change
