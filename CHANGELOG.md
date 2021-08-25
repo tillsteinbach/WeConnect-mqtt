@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.14.4] - 2021-08-25
+### Added
+- New error state: fail_vehicle_is_offline
+- New status: climatisationSettingsRequestStatus
+
+### Changed
+- API version to 19.3
+
 ## [0.14.3] - 2021-08-20
 ### Fixed
 - Fixed bad gateway error with parking position when car is driving
@@ -195,7 +203,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.14.3...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.14.4...HEAD
+[0.14.4]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.4
 [0.14.3]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.3
 [0.14.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.2
 [0.14.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.1
