@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.14.7] - 2021-09-01
+### Fixed
+- typing error on python 3.7
+
+### Changed
+- API version to 20.4
+
 ## [0.14.6] - 2021-08-30
 ### Fixed
 - Display of consent url fixed
@@ -221,7 +228,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.14.6...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.14.7...HEAD
+[0.14.7]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.7
 [0.14.6]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.6
 [0.14.5]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.5
 [0.14.4]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.4
