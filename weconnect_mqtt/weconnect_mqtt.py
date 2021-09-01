@@ -57,7 +57,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     parser.add_argument('--version', action='version',
                         version='%(prog)s {version} (using WeConnect-python {weversion})'.format(version=__version__, weversion=__weconnect_version__))
     parser.add_argument('--mqttbroker', type=str, help='Address of MQTT Broker to connect to', required=True)
-    parser.add_argument('--mqttport', type=str, help='Port of MQTT Broker. Default is 1883 (8883 for TLS)',
+    parser.add_argument('--mqttport', type=NumberRangeArgument(1, 65535), help='Port of MQTT Broker. Default is 1883 (8883 for TLS)',
                         required=False, default=None)
     parser.add_argument('--mqttclientid', required=False, default=None, help='Id of the client. Default is a random id')
     parser.add_argument('-k', '--mqttkeepalive', required=False, type=int, default=60,
