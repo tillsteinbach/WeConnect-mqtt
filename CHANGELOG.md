@@ -3,13 +3,21 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 - No unreleased changes so far
+- 
+## [0.14.10] - 2021-09-02
+### Fixed
+- Allow forbidden (403) return code for parking position
+- Continue fetching data even if retrieval for one car fails
+
+### Changed
+- API version to 0.20.6
 
 ## [0.14.9] - 2021-09-02
 ### Fixed
 - Fixed UnboundLocalError in condition GDC_MISSING
 
 ### Changed
-- API version to 20.5
+- API version to 0.20.5
 
 ## [0.14.8] - 2021-09-01
 ### Fixed
@@ -20,7 +28,7 @@ All notable changes to this project will be documented in this file.
 - typing error on python 3.7
 
 ### Changed
-- API version to 20.4
+- API version to 0.20.4
 
 ## [0.14.6] - 2021-08-30
 ### Fixed
@@ -30,7 +38,7 @@ All notable changes to this project will be documented in this file.
 - Added new error state delayed
 
 ### Changed
-- API version to 20.3
+- API version to 0.20.3
 
 ## [0.14.5] - 2021-08-26
 ### added
@@ -38,7 +46,7 @@ All notable changes to this project will be documented in this file.
 - New error state: fail_ignition_on
 
 ### Changed
-- API version to 20.2
+- API version to 0.20.2
 
 ## [0.14.4] - 2021-08-25
 ### Added
@@ -46,14 +54,14 @@ All notable changes to this project will be documented in this file.
 - New status: climatisationSettingsRequestStatus
 
 ### Changed
-- API version to 19.3
+- API version to 0.19.3
 
 ## [0.14.3] - 2021-08-20
 ### Fixed
 - Fixed bad gateway error with parking position when car is driving
 
 ### Changed
-- API version to 19.2
+- API version to 0.19.2
 
 ## [0.14.2] - 2021-08-19
 ### Fixed
@@ -239,7 +247,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.14.9...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.14.10...HEAD
+[0.14.10]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.10
 [0.14.9]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.9
 [0.14.8]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.8
 [0.14.7]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.7
