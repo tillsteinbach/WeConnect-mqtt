@@ -3,7 +3,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 - No unreleased changes so far
-- 
+
+## [0.14.11] - 2021-09-10
+### Fixed
+- Fix if range is corrupted
+
 ## [0.14.10] - 2021-09-02
 ### Fixed
 - Allow forbidden (403) return code for parking position
@@ -247,7 +251,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.14.10...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.14.11...HEAD
+[0.14.11]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.11
 [0.14.10]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.10
 [0.14.9]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.9
 [0.14.8]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.8
