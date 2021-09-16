@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.14.13] - 2021-09-16
+### Fixed
+- Fixes previous release that did not take new exceptions into account
+
 ## [0.14.12] - 2021-09-15
 ### Added
 - Will retry a request 3 times to try to make instable server connection more stable
@@ -261,7 +265,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.14.12...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.14.13...HEAD
+[0.14.13]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.13
 [0.14.12]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.12
 [0.14.11]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.11
 [0.14.10]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.10
