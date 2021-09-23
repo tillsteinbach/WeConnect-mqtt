@@ -19,6 +19,11 @@ setup(
     author='Till Steinbach',
     keywords='weconnect, we connect, carnet, car net, volkswagen, vw, telemetry, mqtt, smarthome',
     url='https://github.com/tillsteinbach/WeConnect-mqtt',
+    project_urls={
+        'Funding': 'https://github.com/sponsors/WeConnect-mqtt',
+        'Source': 'https://github.com/tillsteinbach/WeConnect-mqtt',
+        'Bug Tracker': 'https://github.com/tillsteinbach/WeConnect-mqtt/issues'
+    },
     license='MIT',
     install_requires=INSTALL_REQUIRED,
     entry_points={
@@ -39,7 +44,5 @@ setup(
         'Topic :: System :: Monitoring',
         'Topic :: Home Automation',
     ],
-    python_requires='>=3.7',
-    setup_requires=SETUP_REQUIRED,
-    tests_require=TEST_REQUIRED,
+    python_requires='>=3.7'
 )
