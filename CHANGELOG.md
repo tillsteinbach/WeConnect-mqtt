@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.14.15] - 2021-09-27
+### Fixed
+- Fixed resetting of parkingposition while driving
+
+### Added
+- New attributes: electricRange, gasolineRange
+
+### Changed
+- API updated to 0.20.14
+
 ## [0.14.14] - 2021-09-23
 ### Fixed
 - Fixed problems coming from changes in the API
@@ -277,6 +287,7 @@ Send empty message when topic is disabled
 Initial release
 
 [unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.14.14...HEAD
+[0.14.15]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.15
 [0.14.14]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.14
 [0.14.13]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.13
 [0.14.12]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.12
