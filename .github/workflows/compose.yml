@@ -24,12 +24,10 @@ jobs:
       uses: juliangruber/sleep-action@v1
       with:
         time: 60s
-    - name: Check logs for weconnectmqtt and mosquitto
-      run: |
-        docker logs vwsfriend_vwsfriend_1
-        docker logs vwsfriend_vwsfriend_1 2>&1 | grep -q 'CRITICAL:vwsfriend_base:There was a problem when authenticating with WeConnect: Your account for test@test.de was not found. Would you like to create a new account?\|CRITICAL:vwsfriend_base:There was a problem when authenticating with WeConnect: Login throttled, probably too many wrong logins. You have to wait some minutes until a new login attempt is possible'
     - name: Check logs for weconnectmqtt
-      run: docker logs docker_weconnectmqtt_1
+      run: |
+        docker logs docker_weconnectmqtt_1
+        docker logs docker_weconnectmqtt_1 2>&1 | grep -q 'CRITICAL:vwsfriend_base:There was a problem when authenticating with WeConnect: Your account for test@test.de was not found. Would you like to create a new account?\|CRITICAL:vwsfriend_base:There was a problem when authenticating with WeConnect: Login throttled, probably too many wrong logins. You have to wait some minutes until a new login attempt is possible'
     - name: Check logs for mosquitto
       run: docker logs docker_mosquitto_1
     - name: Container Status
