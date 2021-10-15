@@ -34,5 +34,5 @@ jobs:
       run: docker ps -a
     - name: Check running containers again
       run: |
-        docker ps -a | grep -q 'Up.*\(healthy\).*docker_weconnectmqtt_1'
-        docker ps -a | grep -q 'Up.*\(healthy\).*docker_mosquitto_1'
+        docker ps -a | grep -q 'Up.*docker_weconnectmqtt_1'
+        docker ps -a | grep -q 'Up.*docker_mosquitto_1'
