@@ -5,7 +5,7 @@ services:
     image: "tillsteinbach/weconnect-mqtt:latest"
     restart: unless-stopped
     environment:
-      - USER=my@vwid-user.de
+      - USER=test@test.de
       - PASSWORD=myvwidpassword
       - BROKER_ADDRESS=mosquitto
 
