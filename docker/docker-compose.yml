@@ -8,18 +8,19 @@ services:
       - USER=test@test.de
       - PASSWORD=myvwidpassword
       - BROKER_ADDRESS=mosquitto
+      - ADDITIONAL_PARAMETERS=-vv
 
   mosquitto:
     image: eclipse-mosquitto
     restart: unless-stopped
     ports:
       - 1883:1883
-      - 8883:8883
+      - 8883:8883 
     volumes:
       - mosquitto-data:/mosquitto/data
       - mosquitto-logs:/mosquitto/logs
       - mosquitto-conf:/mosquitto/config
-
+    command: ["/usr/sbin/mosquitto", "-c", "/mosquitto-no-auth.conf"]
 volumes:
   mosquitto-data:
   mosquitto-logs:
