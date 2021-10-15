@@ -1,0 +1,40 @@
+name: Docker-Compose CI
+
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/compose.yml'
+      - 'docker/docker-compose*.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        compose-file: [docker-compose.yml]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build the docker-compose stack
+      run: docker-compose -f docker/${{ matrix.compose-file }} up -d
+    - name: Container Status
+      run: docker ps -a
+    - name: Let containers run for 60s
+      uses: juliangruber/sleep-action@v1
+      with:
+        time: 60s
+    - name: Check logs for weconnectmqtt and mosquitto
+      run: |
+        docker logs vwsfriend_vwsfriend_1
+        docker logs vwsfriend_vwsfriend_1 2>&1 | grep -q 'CRITICAL:vwsfriend_base:There was a problem when authenticating with WeConnect: Your account for test@test.de was not found. Would you like to create a new account?\|CRITICAL:vwsfriend_base:There was a problem when authenticating with WeConnect: Login throttled, probably too many wrong logins. You have to wait some minutes until a new login attempt is possible'
+    - name: Check logs for weconnectmqtt
+      run: docker logs docker_weconnectmqtt_1
+    - name: Check logs for mosquitto
+      run: docker logs docker_mosquitto_1
+    - name: Container Status
+      run: docker ps -a
+    - name: Check running containers again
+      run: |
+        docker ps -a | grep -q 'Up.*\(healthy\).*docker_weconnectmqtt_1'
+        docker ps -a | grep -q 'Up.*\(healthy\).*docker_mosquitto_1'
