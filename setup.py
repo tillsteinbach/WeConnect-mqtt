@@ -28,7 +28,7 @@ setup(
     install_requires=INSTALL_REQUIRED,
     entry_points={
         'console_scripts': [
-            'weconnect-mqtt = weconnect_mqtt.weconnect_mqtt:main',
+            'weconnect-mqtt = weconnect_mqtt.weconnect_mqtt_base:main',
         ],
     },
     classifiers=[
