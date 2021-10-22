@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.16.1] - 2021-10-22
+### Fixed
+- Fix badge for unlocked vehicle
+- Fixes picture caching
+- Will delete cache file if cache is corrupted
+
+### Changed
+- Updated API to 0.21.5
+- Updated paho-mqtt requirement from 1.5.1 to 1.6.1
+
 ## [0.16.0] - 2021-10-15
 ### Changed
 - Updated API to 0.21.3
@@ -298,7 +308,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.16.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.16.1...HEAD
+[0.16.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.16.1
 [0.16.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.16.0
 [0.15.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.15.0
 [0.14.15]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.14.15
