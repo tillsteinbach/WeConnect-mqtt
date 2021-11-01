@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.16.2] - 2021-11-01
+### Changed
+- Updated API to 0.22.0
+
 ## [0.16.1] - 2021-10-22
 ### Fixed
 - Fix badge for unlocked vehicle
@@ -308,7 +312,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.16.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.16.2...HEAD
+[0.16.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.16.2
 [0.16.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.16.1
 [0.16.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.16.0
 [0.15.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.15.0
