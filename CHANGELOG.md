@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.16.3] - 2021-11-04
+### Fixed
+- Handle timeout during reconnect
+
+### Changed
+- Updated API to 0.22.1
+
 ## [0.16.2] - 2021-11-01
 ### Changed
 - Updated API to 0.22.0

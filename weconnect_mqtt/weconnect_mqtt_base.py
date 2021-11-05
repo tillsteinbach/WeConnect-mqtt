@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone
 from enum import Enum
 import os
 import sys
+import socket
 import argparse
 import netrc
 import getpass
@@ -376,7 +377,16 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             LOG.info('Client successfully disconnected')
         else:
             LOG.info('Client unexpectedly disconnected (%d), trying to reconnect', rc)
-            self.reconnect()
+            while True:
+                try:
+                    self.reconnect()
+                    break
+                except ConnectionRefusedError as e:
+                    LOG.error('Could not reconnect to MQTT-Server: %s, will retry in 10 seconds', e)
+                except socket.timeout:
+                    LOG.error('Could not reconnect to MQTT-Server due to timeout, will retry in 10 seconds')
+                finally:
+                    time.sleep(10)
 
     def on_subscribe_callback(self, mqttc, obj, mid, granted_qos):
         del mqttc  # unused
