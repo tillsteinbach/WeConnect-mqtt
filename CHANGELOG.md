@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.19.1] - 2021-12-01
+### Fixed
+- Fixed missing readiness_status module
+### Changed
+- Updated API to 0.25.1
+
 ## [0.19.0] - 2021-12-01
 ### Added
 - Add new status fail_battery_low
@@ -348,7 +354,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.19.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.19.1...HEAD
+[0.19.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.19.1
 [0.19.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.19.0
 [0.18.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.18.0
 [0.17.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.17.1
