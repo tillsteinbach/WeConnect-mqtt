@@ -1,2 +1,2 @@
-weconnect~=0.25.1
+weconnect~=0.26.0
 paho-mqtt~=1.6.1

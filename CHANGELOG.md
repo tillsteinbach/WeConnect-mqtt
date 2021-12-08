@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.20.0] - 2021-12-08
+### Added
+- Add new gasoline car type
+
 ## [0.19.1] - 2021-12-01
 ### Fixed
 - Fixed missing readiness_status module
@@ -354,7 +358,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.19.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.20.0...HEAD
+[0.20.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.20.0
 [0.19.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.19.1
 [0.19.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.19.0
 [0.18.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.18.0
