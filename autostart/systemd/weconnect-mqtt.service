@@ -1,0 +1,12 @@
+[Unit]
+Description=WeConnect-mqtt
+After=network-online.target
+
+[Service]
+Type=simple
+# change the commandline parameters here:
+ExecStart=/bin/sh -c 'weconnect-mqtt --username test@test.de --password test123 --mqttbroker 192.168.0.1 --mqtt-username test --mqtt-password test123 --prefix weconnect'
+# Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
