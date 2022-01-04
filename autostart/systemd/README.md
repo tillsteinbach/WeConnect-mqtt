@@ -1,7 +1,7 @@
 # Install WeConnect-MQTT as a service on on operating systems providing systemd
 
 ## How to install
-Open file weconnect-mqtt.service and change the commandline parameters according to your needs
+Open file weconnect-mqtt.service and change the username and commandline parameters according to your needs
 
 Copy the unit file to /etc/systemd/system and give it permissions:
 ```bash
