@@ -22,7 +22,7 @@ sudo systemctl stop weconnect-mqtt
 sudo systemctl restart weconnect-mqtt
 ```
 
-## How to enable autosart after boot
+## How to enable autostart after boot
 Finally, use the enable command to ensure that the service starts whenever the system boots:
 ```bash
 sudo systemctl enable weconnect-mqtt
