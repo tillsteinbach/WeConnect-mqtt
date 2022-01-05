@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.22.0] - 2022-01-05
+### Changed
+- API is using new url enpoints now
+- Updated API to 0.29.0
+
+### Fixed
+- Conflicts when simplejson is installed and preferred from requests
+
+### Added
+- Added MBB Platform
+- New logging configuration parameters
+
 ## [0.21.0] - 2021-12-20
 ### Added
 - decoding of capability status
@@ -370,7 +382,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.21.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.22.0...HEAD
+[0.22.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.22.0
 [0.21.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.21.0
 [0.20.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.20.0
 [0.19.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.19.1
