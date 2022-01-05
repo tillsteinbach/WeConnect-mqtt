@@ -57,49 +57,53 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
         description='Commandline Interface to interact with the Volkswagen WeConnect Services')
     parser.add_argument('--version', action='version',
                         version=f'%(prog)s {__version__} (using WeConnect-python {__weconnect_version__})')
-    parser.add_argument('--mqttbroker', type=str, help='Address of MQTT Broker to connect to', required=True)
-    parser.add_argument('--mqttport', type=NumberRangeArgument(1, 65535), help='Port of MQTT Broker. Default is 1883 (8883 for TLS)',
-                        required=False, default=None)
-    parser.add_argument('--mqttclientid', required=False, default=None, help='Id of the client. Default is a random id')
-    parser.add_argument('-k', '--mqttkeepalive', required=False, type=int, default=60,
-                        help='Time between keep-alive messages')
-    parser.add_argument('-mu', '--mqtt-username', type=str, dest='mqttusername',
-                        help='Username for MQTT broker', required=False)
-    parser.add_argument('-mp', '--mqtt-password', type=str, dest='mqttpassword',
-                        help='Password for MQTT broker', required=False)
-    parser.add_argument('--transport', required=False, default='tcp', choices=["tcp", 'websockets'],
-                        help='EXPERIMENTAL support for websockets transport')
-    parser.add_argument('-s', '--use-tls', action='store_true', help='EXPERIMENTAL')
-    parser.add_argument('--insecure', action='store_true', help='EXPERIMENTAL')
-    parser.add_argument('--cacerts', required=False, default=None, help='EXPERIMENTAL path to the Certificate Authority'
-                        ' certificate files that are to be treated as trusted by this client')
-    parser.add_argument('--cert', required=False, default=None, help='EXPERIMENTAL PEM encoded client certificate')
-    parser.add_argument('--key', required=False, default=None, help='EXPERIMENTAL PEM encoded client private key')
-    parser.add_argument('--tls-version', required=False, default=None, choices=['tlsv1.2', 'tlsv1.1', 'tlsv1'],
-                        help='EXPERIMENTAL TLS protocol version')
+    brokerGroup = parser.add_argument_group('MQTT and Broker')
+    brokerGroup.add_argument('--mqttbroker', type=str, help='Address of MQTT Broker to connect to', required=True)
+    brokerGroup.add_argument('--mqttport', type=NumberRangeArgument(1, 65535), help='Port of MQTT Broker. Default is 1883 (8883 for TLS)',
+                             required=False, default=None)
+    brokerGroup.add_argument('--mqttclientid', required=False, default=None, help='Id of the client. Default is a random id')
+    brokerGroup.add_argument('--prefix', help='MQTT topic prefix', type=str, required=False, default='weconnect/0')
+    brokerGroup.add_argument('-k', '--mqttkeepalive', required=False, type=int, default=60, help='Time between keep-alive messages')
+    brokerGroup.add_argument('-mu', '--mqtt-username', type=str, dest='mqttusername', help='Username for MQTT broker', required=False)
+    brokerGroup.add_argument('-mp', '--mqtt-password', type=str, dest='mqttpassword', help='Password for MQTT broker', required=False)
+    brokerGroup.add_argument('--transport', required=False, default='tcp', choices=["tcp", 'websockets'], help='EXPERIMENTAL support for websockets transport')
+    brokerGroup.add_argument('-s', '--use-tls', action='store_true', help='EXPERIMENTAL')
+    brokerGroup.add_argument('--insecure', action='store_true', help='EXPERIMENTAL')
+    brokerGroup.add_argument('--cacerts', required=False, default=None, help='EXPERIMENTAL path to the Certificate Authority'
+                             ' certificate files that are to be treated as trusted by this client')
+    brokerGroup.add_argument('--cert', required=False, default=None, help='EXPERIMENTAL PEM encoded client certificate')
+    brokerGroup.add_argument('--key', required=False, default=None, help='EXPERIMENTAL PEM encoded client private key')
+    brokerGroup.add_argument('--tls-version', required=False, default=None, choices=['tlsv1.2', 'tlsv1.1', 'tlsv1'],
+                             help='EXPERIMENTAL TLS protocol version')
+    brokerGroup.add_argument('--ignore-for', dest='ignore', help='Ignore messages for first IGNORE seconds after subscribe to aviod '
+                             'retained messages from the broker to make changes to the car (default is 5s) if you don\'t want this behavious set to 0',
+                             type=int, required=False, default=5)
 
-    parser.add_argument('-u', '--username', type=str, help='Username of Volkswagen id', required=False)
-    parser.add_argument('-p', '--password', type=str, help='Password of Volkswagen id', required=False)
+    weConnectGroup = parser.add_argument_group('WeConnect')
+    weConnectGroup.add_argument('-u', '--username', type=str, help='Username of Volkswagen id', required=False)
+    weConnectGroup.add_argument('-p', '--password', type=str, help='Password of Volkswagen id', required=False)
     defaultNetRc = os.path.join(os.path.expanduser("~"), ".netrc")
-    parser.add_argument('--netrc', help=f'File in netrc syntax providing login (default: {defaultNetRc}).'
-                        ' Netrc is only used when username and password are not provided  as arguments',
-                        default=None, required=False)
-    parser.add_argument('-i', '--interval', help='Query interval in seconds',
-                              type=NumberRangeArgument(300, 3500), required=False, default=300)
-    parser.add_argument('--picture-cache-interval', dest='pictureCache', help='Picture download interval in seconds, this does not influence the interval in'
-                        ' which the status picture is updated', type=NumberRangeArgument(1), required=False, default=86400)
-    parser.add_argument('--prefix', help='MQTT topic prefix',
-                        type=str, required=False, default='weconnect/0')
-    parser.add_argument('--ignore-for', dest='ignore', help='Ignore messages for first IGNORE seconds after subscribe to aviod '
-                        'retained messages from the broker to make changes to the car (default is 5s) if you don\'t want this behavious set to 0',
-                        type=int, required=False, default=5)
-    parser.add_argument('-v', '--verbose', action="append_const", const=-1,)
-    parser.add_argument('-l', '--chargingLocation', nargs=2, metavar=('latitude', 'longitude'), type=float,
-                        help='If set charging locations will be added to the result around the given coordinates')
-    parser.add_argument('--chargingLocationRadius', type=NumberRangeArgument(0, 100000),
-                        help='Radius in meters around the chargingLocation to search for chargers')
-    parser.add_argument('--no-capabilities', dest='noCapabilities', help='Do not add capabilities', action='store_true')
+    weConnectGroup.add_argument('--netrc', help=f'File in netrc syntax providing login (default: {defaultNetRc}).'
+                                ' Netrc is only used when username and password are not provided  as arguments', default=None, required=False)
+    weConnectGroup.add_argument('-i', '--interval', help='Query interval in seconds',
+                                type=NumberRangeArgument(300, 3500), required=False, default=300)
+    weConnectGroup.add_argument('--picture-cache-interval', dest='pictureCache', help='Picture download interval in seconds, this does not influence the'
+                                ' interval in which the status picture is updated', type=NumberRangeArgument(1), required=False, default=86400)
+
+    weConnectGroup.add_argument('-l', '--chargingLocation', nargs=2, metavar=('latitude', 'longitude'), type=float,
+                                help='If set charging locations will be added to the result around the given coordinates')
+    weConnectGroup.add_argument('--chargingLocationRadius', type=NumberRangeArgument(0, 100000),
+                                help='Radius in meters around the chargingLocation to search for chargers')
+    weConnectGroup.add_argument('--no-capabilities', dest='noCapabilities', help='Do not add capabilities', action='store_true')
     parser.add_argument('--pictures', help='Add ASCII art pictures', action='store_true')
+
+    loggingGroup = parser.add_argument_group('Logging')
+    loggingGroup.add_argument('-v', '--verbose', action="append_const", help='Logging level (verbosity)', const=-1,)
+    loggingGroup.add_argument('--logging-format', dest='loggingFormat', help='Logging format configured for python logging '
+                              '(default: %%(asctime)s:%%(levelname)s:%%(module)s:%%(message)s)', default='%(asctime)s:%(levelname)s:%(module)s:%(message)s')
+    loggingGroup.add_argument('--logging-date-format', dest='loggingDateFormat', help='Logging format configured for python logging '
+                              '(default: %%Y-%%m-%%dT%%H:%%M:%%S%%z)', default='%Y-%m-%dT%H:%M:%S%z')
+    loggingGroup.add_argument('--hide-repeated-log', dest='hideRepeatedLog', help='Hide repeated log messages from the same module', action='store_true')
 
     args = parser.parse_args()
 
@@ -107,7 +111,10 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     for adjustment in args.verbose or ():
         logLevel = min(len(LOG_LEVELS) - 1, max(logLevel + adjustment, 0))
 
-    logging.basicConfig(level=LOG_LEVELS[logLevel])
+    logging.basicConfig(level=LOG_LEVELS[logLevel], format=args.loggingFormat, datefmt=args.loggingDateFormat)
+    if args.hideRepeatedLog:
+        for handler in logging.root.handlers:
+            handler.addFilter(util.DuplicateFilter())
     LOG.info('WeConnect-mqtt %s (using WeConnect-python %s)', __version__, __weconnect_version__)
 
     usetls = args.use_tls
