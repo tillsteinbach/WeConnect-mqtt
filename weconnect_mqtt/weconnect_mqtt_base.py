@@ -14,7 +14,7 @@ import paho.mqtt.client
 from PIL import Image
 import ascii_magic
 
-from weconnect import weconnect, addressable, errors, util
+from weconnect import weconnect, addressable, errors, util, domain
 from weconnect.__version import __version__ as __weconnect_version__
 
 from .__version import __version__
@@ -95,6 +95,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     weConnectGroup.add_argument('--chargingLocationRadius', type=NumberRangeArgument(0, 100000),
                                 help='Radius in meters around the chargingLocation to search for chargers')
     weConnectGroup.add_argument('--no-capabilities', dest='noCapabilities', help='Do not add capabilities', action='store_true')
+    weConnectGroup.add_argument('--selective', help='Just fetch status of a certain type', default=None, required=False, action='append',
+                                type=domain.Domain, choices=list(domain.Domain))
     parser.add_argument('--pictures', help='Add ASCII art pictures', action='store_true')
 
     loggingGroup = parser.add_argument_group('Logging')
@@ -182,7 +184,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
 
     mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, transport=args.transport, interval=args.interval,
                                      prefix=args.prefix, ignore=args.ignore, updateCapabilities=(not args.noCapabilities),
-                                     updatePictures=args.pictures)
+                                     updatePictures=args.pictures, selective=args.selective)
     mqttCLient.enable_logger()
 
     if usetls:
@@ -253,7 +255,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
 
 
 class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-instance-attributes
-    def __init__(self, clientId=None, transport='tcp', interval=300, prefix='weconnect/0', ignore=0, updateCapabilities=True, updatePictures=True):
+    def __init__(self, clientId=None, transport='tcp', interval=300, prefix='weconnect/0', ignore=0, updateCapabilities=True, updatePictures=True,
+                 selective=None):
         super().__init__(client_id=clientId, transport=transport)
         self.weConnect = None
         self.prefix = prefix
@@ -264,6 +267,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.lastSubscribe = None
         self.updateCapabilities = updateCapabilities
         self.updatePictures = updatePictures
+        self.selective = selective
 
         self.on_connect = self.on_connect_callback
         self.on_message = self.on_message_callback
@@ -281,7 +285,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
     def connectWeConnect(self, username, password, maxAgePictures):
         LOG.info('Connect to WeConnect')
         self.weConnect = weconnect.WeConnect(username=username, password=password, updateAfterLogin=False, updateCapabilities=self.updateCapabilities,
-                                             updatePictures=self.updatePictures, maxAgePictures=maxAgePictures)
+                                             updatePictures=self.updatePictures, maxAgePictures=maxAgePictures, selective=self.selective)
         self.weConnect.addObserver(self.onWeConnectEvent, addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED
                                    | addressable.AddressableLeaf.ObserverEvent.ENABLED | addressable.AddressableLeaf.ObserverEvent.DISABLED,
                                    priority=addressable.AddressableLeaf.ObserverPriority.USER_MID)
@@ -291,7 +295,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
     def updateWeConnect(self):
         LOG.info('Update data from WeConnect')
         try:
-            self.weConnect.update(updateCapabilities=self.updateCapabilities, updatePictures=self.updatePictures)
+            self.weConnect.update(updateCapabilities=self.updateCapabilities, updatePictures=self.updatePictures, selective=self.selective)
             self.setConnected(connected=True)
             self.setError(code=WeConnectErrors.SUCCESS)
             self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdated', qos=1, retain=True,
