@@ -78,6 +78,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     brokerGroup.add_argument('--ignore-for', dest='ignore', help='Ignore messages for first IGNORE seconds after subscribe to aviod '
                              'retained messages from the broker to make changes to the car (default is 5s) if you don\'t want this behavious set to 0',
                              type=int, required=False, default=5)
+    parser.add_argument('--list-topics', dest='listTopics', help='List new topics when created the first time', action='store_true')
 
     weConnectGroup = parser.add_argument_group('WeConnect')
     weConnectGroup.add_argument('-u', '--username', type=str, help='Username of Volkswagen id', required=False)
@@ -184,7 +185,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
 
     mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, transport=args.transport, interval=args.interval,
                                      prefix=args.prefix, ignore=args.ignore, updateCapabilities=(not args.noCapabilities),
-                                     updatePictures=args.pictures, selective=args.selective)
+                                     updatePictures=args.pictures, selective=args.selective, listNewTopics=args.listTopics)
     mqttCLient.enable_logger()
 
     if usetls:
@@ -256,7 +257,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
 
 class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-instance-attributes
     def __init__(self, clientId=None, transport='tcp', interval=300, prefix='weconnect/0', ignore=0, updateCapabilities=True, updatePictures=True,
-                 selective=None):
+                 selective=None, listNewTopics=False):
         super().__init__(client_id=clientId, transport=transport)
         self.weConnect = None
         self.prefix = prefix
@@ -268,6 +269,8 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.updateCapabilities = updateCapabilities
         self.updatePictures = updatePictures
         self.selective = selective
+        self.listNewTopics = listNewTopics
+        self.topics = []
 
         self.on_connect = self.on_connect_callback
         self.on_message = self.on_message_callback
@@ -275,6 +278,17 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.on_subscribe = self.on_subscribe_callback
 
         self.will_set(topic=f'{self.prefix}/mqtt/weconnectConnected', qos=1, retain=True, payload=False)
+
+    def addTopic(self, topic):
+        if topic not in self.topics:
+            self.topics.append(topic)
+            topicstopic = f'{self.prefix}/mqtt/topics'
+            content = '\n'.join(self.topics)
+            self.publish(topic=topicstopic, qos=1, retain=True, payload=content)
+            if topicstopic not in self.topics:
+                self.addTopic(topicstopic)
+            if self.listNewTopics:
+                print(f'New topic: {topic}')
 
     def disconnect(self, reasoncode=None, properties=None):
         disconectPublish = self.publish(topic=f'{self.prefix}/mqtt/weconnectConnected', qos=1, retain=True,
@@ -299,8 +313,11 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             self.weConnect.update(updateCapabilities=self.updateCapabilities, updatePictures=self.updatePictures, selective=self.selective)
             self.setConnected(connected=True)
             self.setError(code=WeConnectErrors.SUCCESS)
-            self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdated', qos=1, retain=True,
+            topic = f'{self.prefix}/mqtt/weconnectUpdated'
+            self.publish(topic=topic, qos=1, retain=True,
                          payload=datetime.utcnow().replace(microsecond=0, tzinfo=timezone.utc).isoformat())
+            if topic not in self.topics:
+                self.addTopic(topic)
         except errors.RetrievalError:
             self.setConnected(connected=False)
             errorMessage = f'Retrieval error during update. Will try again after configured interval of {self.interval}s'
@@ -316,7 +333,10 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         if flags & addressable.AddressableLeaf.ObserverEvent.ENABLED:
             if isinstance(element, addressable.ChangeableAttribute):
                 LOG.debug('Subscribe for attribute %s%s', self.prefix, element.getGlobalAddress())
-                self.subscribe(f'{self.prefix}{element.getGlobalAddress()}', qos=1)
+                topic = f'{self.prefix}{element.getGlobalAddress()}'
+                self.subscribe(topic, qos=1)
+            if topic not in self.topics:
+                self.addTopic(topic)
         elif flags & addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED:
             if isinstance(element.value, (str, int, float)) or element.value is None:
                 convertedValue = element.value
@@ -334,15 +354,24 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
 
     def setConnected(self, connected=True):
         if connected != self.connected:
-            self.publish(topic=f'{self.prefix}/mqtt/weconnectConnected', qos=1, retain=True, payload=connected)
+            topic = f'{self.prefix}/mqtt/weconnectConnected'
+            self.publish(topic=topic, qos=1, retain=True, payload=connected)
             self.connected = connected
+            if topic not in self.topics:
+                self.addTopic(topic)
 
     def setError(self, code=None, message=''):
         if code is None:
             code = WeConnectErrors.SUCCESS
         if code != WeConnectErrors.SUCCESS or message != '' or self.hasError is None or self.hasError:
-            self.publish(topic=f'{self.prefix}/mqtt/error/code', qos=1, retain=False, payload=code.value)
-            self.publish(topic=f'{self.prefix}/mqtt/error/message', qos=1, retain=False, payload=message)
+            topic = f'{self.prefix}/mqtt/error/code'
+            self.publish(topic=topic, qos=1, retain=False, payload=code.value)
+            if topic not in self.topics:
+                self.addTopic(topic)
+            topic = f'{self.prefix}/mqtt/error/message'
+            self.publish(topic=topic, qos=1, retain=False, payload=message)
+            if topic not in self.topics:
+                self.addTopic(topic)
         if code != WeConnectErrors.SUCCESS:
             self.hasError = True
         else:
@@ -355,12 +384,18 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
 
         if rc == 0:
             LOG.info('Connected to MQTT broker')
-            self.publish(topic=f'{self.prefix}/mqtt/weconnectForceUpdate', qos=1, payload=False)
-            self.subscribe(f'{self.prefix}/mqtt/weconnectForceUpdate', qos=2)
+            topic = f'{self.prefix}/mqtt/weconnectForceUpdate'
+            self.publish(topic=topic, qos=1, payload=False)
+            self.subscribe(topic, qos=2)
+            if topic not in self.topics:
+                self.addTopic(topic)
 
-            self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdateInterval_s', qos=1, retain=True,
+            topic = f'{self.prefix}/mqtt/weconnectUpdateInterval_s'
+            self.publish(topic=topic, qos=1, retain=True,
                          payload=self.interval)
-            self.subscribe(f'{self.prefix}/mqtt/weconnectUpdateInterval_s', qos=1)
+            self.subscribe(topic, qos=1)
+            if topic not in self.topics:
+                self.addTopic(topic)
 
             self.setConnected()
 
