@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.23.0] - 2022-01-10
+### Fixed
+- no-capabilities fixed
+
+### Added
+- selective option that allows to only fetch a subset of the data
+
+### Changed
+- Updated API to 0.30.0
+
 ## [0.22.0] - 2022-01-05
 ### Changed
 - ***Warning, the topics changed due to conflicts within the status names from recent changes at WeConnect***
@@ -383,7 +393,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.22.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.23.0...HEAD
+[0.23.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.23.0
 [0.22.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.22.0
 [0.21.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.21.0
 [0.20.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.20.0

@@ -70,6 +70,7 @@ Data for charging stations is mostly static, but you can see the current availab
 
 ### Disabling features
 You can disable data for the cars capabilities with `--no-capabilities`
+If you only need a subset of the data you can use the `--selective` option. E.g. `--selective climatisation`
 
 ### ASCII Art vehicle images
 You can enable ASCII Art pictures of the cars with `--pictures`
