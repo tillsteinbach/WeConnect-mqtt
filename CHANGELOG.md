@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - selective option that allows to only fetch a subset of the data
+- Make result from control commands more responsive
 
 ### Changed
 - Updated API to 0.30.0
