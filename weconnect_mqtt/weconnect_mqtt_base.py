@@ -286,6 +286,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         LOG.info('Connect to WeConnect')
         self.weConnect = weconnect.WeConnect(username=username, password=password, updateAfterLogin=False, updateCapabilities=self.updateCapabilities,
                                              updatePictures=self.updatePictures, maxAgePictures=maxAgePictures, selective=self.selective)
+        self.weConnect.enableTracker()
         self.weConnect.addObserver(self.onWeConnectEvent, addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED
                                    | addressable.AddressableLeaf.ObserverEvent.ENABLED | addressable.AddressableLeaf.ObserverEvent.DISABLED,
                                    priority=addressable.AddressableLeaf.ObserverPriority.USER_MID)
