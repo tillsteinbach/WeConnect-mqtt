@@ -288,6 +288,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
     def addTopic(self, topic):
         if topic not in self.topics:
             self.topics.append(topic)
+            self.topics.sort()
             topicstopic = f'{self.prefix}/mqtt/topics'
             content = '\n,'.join(self.topics)
             self.publish(topic=topicstopic, qos=1, retain=True, payload=content)
@@ -295,6 +296,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                 self.addTopic(topicstopic)
             if self.listNewTopics:
                 print(f'New topic: {topic}')
+            print(f'New topic: {topic}')
 
     def disconnect(self, reasoncode=None, properties=None):
         try:
