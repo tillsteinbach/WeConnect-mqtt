@@ -9,6 +9,9 @@ All notable changes to this project will be documented in this file.
 - new topic /mqtt/topics that provides all known topics
 - new parameter --list-topics to print out new known topics to console
 
+### Fixed
+- Missing connection on startup
+
 ## [0.23.2] - 2022-01-10
 ### Fixed
 - timezone problem fixed
