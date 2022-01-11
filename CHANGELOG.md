@@ -11,6 +11,11 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Missing connection on startup
+- More robust against server errors
+- Hides status 204 on missing parking position
+
+### Changed
+- Updated API to 0.30.3
 
 ## [0.23.2] - 2022-01-10
 ### Fixed
