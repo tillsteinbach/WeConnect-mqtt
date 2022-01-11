@@ -215,7 +215,13 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
         mqttCLient.username_pw_set(username=mqttusername, password=mqttpassword)
 
     try:
-        mqttCLient.connectWeConnect(username=username, password=password, maxAgePictures=args.pictureCache)
+        while True:
+            try:
+                mqttCLient.connectWeConnect(username=username, password=password, maxAgePictures=args.pictureCache)
+                break
+            except ConnectionError as e:
+                LOG.error('Could not connect to VW-Server: %s, will retry in 10 seconds', e)
+                time.sleep(10)
 
         if args.chargingLocation is not None:
             latitude, longitude = args.chargingLocation
@@ -291,9 +297,12 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                 print(f'New topic: {topic}')
 
     def disconnect(self, reasoncode=None, properties=None):
-        disconectPublish = self.publish(topic=f'{self.prefix}/mqtt/weconnectConnected', qos=1, retain=True,
-                                        payload=False)
-        disconectPublish.wait_for_publish()
+        try:
+            disconectPublish = self.publish(topic=f'{self.prefix}/mqtt/weconnectConnected', qos=1, retain=True,
+                                            payload=False)
+            disconectPublish.wait_for_publish()
+        except RuntimeError:
+            pass
         super().disconnect(reasoncode, properties)
 
     def connectWeConnect(self, username, password, maxAgePictures):
@@ -335,8 +344,8 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                 LOG.debug('Subscribe for attribute %s%s', self.prefix, element.getGlobalAddress())
                 topic = f'{self.prefix}{element.getGlobalAddress()}'
                 self.subscribe(topic, qos=1)
-            if topic not in self.topics:
-                self.addTopic(topic)
+                if topic not in self.topics:
+                    self.addTopic(topic)
         elif flags & addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED:
             if isinstance(element.value, (str, int, float)) or element.value is None:
                 convertedValue = element.value
