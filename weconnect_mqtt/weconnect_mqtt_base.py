@@ -295,8 +295,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             if topicstopic not in self.topics:
                 self.addTopic(topicstopic)
             if self.listNewTopics:
-                print(f'New topic: {topic}')
-            print(f'New topic: {topic}')
+                print(f'New topic: {topic}', flush=True)
 
     def disconnect(self, reasoncode=None, properties=None):
         try:
