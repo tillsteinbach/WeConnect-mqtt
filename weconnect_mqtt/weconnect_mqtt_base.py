@@ -277,7 +277,9 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.selective = selective
         self.listNewTopics = listNewTopics
         self.topics = []
+        self.topicsChanged = False
         self.writeableTopics = []
+        self.writeableTopicsChanged = False
 
         self.on_connect = self.on_connect_callback
         self.on_message = self.on_message_callback
@@ -290,21 +292,32 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         if topic not in self.topics:
             self.topics.append(topic)
             self.topics.sort()
+            self.topicsChanged = True
+
+            if writeable:
+                self.writeableTopics.append(topic)
+                self.writeableTopics.sort()
+                self.writeableTopicsChanged = True
+
+            if self.listNewTopics:
+                print(f'New topic: {topic}{" (writeable)" if writeable else ""}', flush=True)
+
+    def publishTopics(self):
+        if self.topicsChanged:
+            self.topicsChanged = False
             topicstopic = f'{self.prefix}/mqtt/topics'
             content = ',\n'.join(self.topics)
             self.publish(topic=topicstopic, qos=1, retain=True, payload=content)
             if topicstopic not in self.topics:
                 self.addTopic(topicstopic)
-            if writeable:
-                self.writeableTopics.append(topic)
-                self.writeableTopics.sort()
-                writeabletopicstopic = f'{self.prefix}/mqtt/writeableTopics'
-                content = '\n,'.join(self.writeableTopics)
-                self.publish(topic=writeabletopicstopic, qos=1, retain=True, payload=content)
-                if writeabletopicstopic not in self.topics:
-                    self.addTopic(writeabletopicstopic)
-            if self.listNewTopics:
-                print(f'New topic: {topic}{" (writeable)" if writeable else ""}', flush=True)
+
+        if self.writeableTopicsChanged:
+            self.writeableTopicsChanged = False
+            writeabletopicstopic = f'{self.prefix}/mqtt/writeableTopics'
+            content = ',\n'.join(self.writeableTopics)
+            self.publish(topic=writeabletopicstopic, qos=1, retain=True, payload=content)
+            if writeabletopicstopic not in self.topics:
+                self.addTopic(writeabletopicstopic)
 
     def disconnect(self, reasoncode=None, properties=None):
         try:
@@ -347,6 +360,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             errorMessage = f'API compatibility error during update. Will try again after configured interval of {self.interval}s'
             self.setError(code=WeConnectErrors.API_COMPATIBILITY, message=errorMessage)
             LOG.info(errorMessage)
+        self.publishTopics()
 
     def onWeConnectEvent(self, element, flags):  # noqa: C901
         if flags & addressable.AddressableLeaf.ObserverEvent.ENABLED:
