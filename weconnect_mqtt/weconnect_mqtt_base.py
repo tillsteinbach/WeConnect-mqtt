@@ -341,12 +341,12 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
 
     def onWeConnectEvent(self, element, flags):
         if flags & addressable.AddressableLeaf.ObserverEvent.ENABLED:
+            topic = f'{self.prefix}{element.getGlobalAddress()}'
+            if topic not in self.topics:
+                self.addTopic(topic)
             if isinstance(element, addressable.ChangeableAttribute):
                 LOG.debug('Subscribe for attribute %s%s', self.prefix, element.getGlobalAddress())
-                topic = f'{self.prefix}{element.getGlobalAddress()}'
                 self.subscribe(topic, qos=1)
-                if topic not in self.topics:
-                    self.addTopic(topic)
         elif flags & addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED:
             if isinstance(element.value, (str, int, float)) or element.value is None:
                 convertedValue = element.value
