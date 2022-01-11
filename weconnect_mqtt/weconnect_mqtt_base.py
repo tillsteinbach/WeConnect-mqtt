@@ -62,7 +62,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     brokerGroup.add_argument('--mqttport', type=NumberRangeArgument(1, 65535), help='Port of MQTT Broker. Default is 1883 (8883 for TLS)',
                              required=False, default=None)
     brokerGroup.add_argument('--mqttclientid', required=False, default=None, help='Id of the client. Default is a random id')
-    brokerGroup.add_argument('--prefix', help='MQTT topic prefix', type=str, required=False, default='weconnect/0')
+    brokerGroup.add_argument('--prefix', help='MQTT topic prefix (default is weconnect/0)', type=str, required=False, default='weconnect/0')
     brokerGroup.add_argument('-k', '--mqttkeepalive', required=False, type=int, default=60, help='Time between keep-alive messages')
     brokerGroup.add_argument('-mu', '--mqtt-username', type=str, dest='mqttusername', help='Username for MQTT broker', required=False)
     brokerGroup.add_argument('-mp', '--mqtt-password', type=str, dest='mqttpassword', help='Password for MQTT broker', required=False)

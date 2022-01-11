@@ -68,6 +68,10 @@ You can also provide the location of the netrc file using the --netrc option
 You can also obtain data from charging stations by adding a location with e.g. `--chargingLocation 52.437132 10.796628` and a radius in meters with `--chargingLocationRadius=500`.
 Data for charging stations is mostly static, but you can see the current availability.
 
+### Topics
+If your broker does not let you observe all available topics you can pass the parameter `--list-topics` to get all topics displayed on the commandline. Topics marked as "(writeable)" can be manipulated.
+There are also two topics to receive all available topics as a comma seperated list: `weconnect/0/mqtt/topics` lists all available topics, `weconnect/0/mqtt/writeableTopics` provides topics that can be manipulated.
+
 ### Disabling features
 You can disable data for the cars capabilities with `--no-capabilities`
 If you only need a subset of the data you can use the `--selective` option. E.g. `--selective climatisation`
