@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ## [0.24.0] - In testing
 ### Added
-- new topic /mqtt/topics that provides all known topics
+- new topics /mqtt/topics and /mqtt/writeableTopics that provide all known topics
 - new parameter --list-topics to print out new known topics to console
 
 ### Fixed

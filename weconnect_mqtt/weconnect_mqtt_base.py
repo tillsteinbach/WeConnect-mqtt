@@ -277,6 +277,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.selective = selective
         self.listNewTopics = listNewTopics
         self.topics = []
+        self.writeableTopics = []
 
         self.on_connect = self.on_connect_callback
         self.on_message = self.on_message_callback
@@ -285,7 +286,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
 
         self.will_set(topic=f'{self.prefix}/mqtt/weconnectConnected', qos=1, retain=True, payload=False)
 
-    def addTopic(self, topic):
+    def addTopic(self, topic, writeable=False):
         if topic not in self.topics:
             self.topics.append(topic)
             self.topics.sort()
@@ -294,8 +295,14 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             self.publish(topic=topicstopic, qos=1, retain=True, payload=content)
             if topicstopic not in self.topics:
                 self.addTopic(topicstopic)
+            if writeable:
+                self.writeableTopics.append(topic)
+                self.writeableTopics.sort()
+                writeabletopicstopic = f'{self.prefix}/mqtt/writeableTopics'
+                content = '\n,'.join(self.writeableTopics)
+                self.publish(topic=writeabletopicstopic, qos=1, retain=True, payload=content)
             if self.listNewTopics:
-                print(f'New topic: {topic}', flush=True)
+                print(f'New topic: {topic}{"( writeable)" if writeable else ""}', flush=True)
 
     def disconnect(self, reasoncode=None, properties=None):
         try:
