@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
-## [0.24.0] - In testing
+## [0.24.0] - 2022-01-11
 ### Added
 - new topics /mqtt/topics and /mqtt/writeableTopics that provide all known topics
 - new parameter --list-topics to print out new known topics to console
