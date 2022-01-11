@@ -301,6 +301,8 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                 writeabletopicstopic = f'{self.prefix}/mqtt/writeableTopics'
                 content = '\n,'.join(self.writeableTopics)
                 self.publish(topic=writeabletopicstopic, qos=1, retain=True, payload=content)
+                if writeabletopicstopic not in self.topics:
+                    self.addTopic(writeabletopicstopic)
             if self.listNewTopics:
                 print(f'New topic: {topic}{" (writeable)" if writeable else ""}', flush=True)
 
