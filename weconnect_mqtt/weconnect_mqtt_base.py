@@ -302,7 +302,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                 content = '\n,'.join(self.writeableTopics)
                 self.publish(topic=writeabletopicstopic, qos=1, retain=True, payload=content)
             if self.listNewTopics:
-                print(f'New topic: {topic}{"( writeable)" if writeable else ""}', flush=True)
+                print(f'New topic: {topic}{" (writeable)" if writeable else ""}', flush=True)
 
     def disconnect(self, reasoncode=None, properties=None):
         try:
@@ -346,14 +346,17 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             self.setError(code=WeConnectErrors.API_COMPATIBILITY, message=errorMessage)
             LOG.info(errorMessage)
 
-    def onWeConnectEvent(self, element, flags):
+    def onWeConnectEvent(self, element, flags):  # noqa: C901
         if flags & addressable.AddressableLeaf.ObserverEvent.ENABLED:
             topic = f'{self.prefix}{element.getGlobalAddress()}'
-            if topic not in self.topics:
-                self.addTopic(topic)
             if isinstance(element, addressable.ChangeableAttribute):
                 LOG.debug('Subscribe for attribute %s%s', self.prefix, element.getGlobalAddress())
                 self.subscribe(topic, qos=1)
+                if topic not in self.topics:
+                    self.addTopic(topic, writeable=True)
+            elif isinstance(element, addressable.AddressableAttribute):
+                if topic not in self.topics:
+                    self.addTopic(topic)
         elif flags & addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED:
             if isinstance(element.value, (str, int, float)) or element.value is None:
                 convertedValue = element.value
@@ -405,14 +408,14 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             self.publish(topic=topic, qos=1, payload=False)
             self.subscribe(topic, qos=2)
             if topic not in self.topics:
-                self.addTopic(topic)
+                self.addTopic(topic, writeable=True)
 
             topic = f'{self.prefix}/mqtt/weconnectUpdateInterval_s'
             self.publish(topic=topic, qos=1, retain=True,
                          payload=self.interval)
             self.subscribe(topic, qos=1)
             if topic not in self.topics:
-                self.addTopic(topic)
+                self.addTopic(topic, writeable=True)
 
             self.setConnected()
 
