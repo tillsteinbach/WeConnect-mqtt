@@ -14,7 +14,7 @@ import paho.mqtt.client
 from PIL import Image
 import ascii_magic
 
-from requests.exceptions import ConnectionError
+from requests import exceptions
 
 from weconnect import weconnect, addressable, errors, util, domain
 from weconnect.__version import __version__ as __weconnect_version__
@@ -221,7 +221,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
             try:
                 mqttCLient.connectWeConnect(username=username, password=password, maxAgePictures=args.pictureCache)
                 break
-            except ConnectionError as e:
+            except exceptions.ConnectionError as e:
                 LOG.error('Could not connect to VW-Server: %s, will retry in 10 seconds', e)
                 time.sleep(10)
 
