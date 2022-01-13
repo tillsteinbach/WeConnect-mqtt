@@ -80,6 +80,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     brokerGroup.add_argument('--ignore-for', dest='ignore', help='Ignore messages for first IGNORE seconds after subscribe to aviod '
                              'retained messages from the broker to make changes to the car (default is 5s) if you don\'t want this behavious set to 0',
                              type=int, required=False, default=5)
+    parser.add_argument('--republish-on-update', dest='republishOnUpdate', action='store_true',
+                        help='Republish all topics on every update, not just when the value changes.')
     parser.add_argument('--list-topics', dest='listTopics', help='List new topics when created the first time', action='store_true')
 
     weConnectGroup = parser.add_argument_group('WeConnect')
@@ -187,7 +189,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
 
     mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, transport=args.transport, interval=args.interval,
                                      prefix=args.prefix, ignore=args.ignore, updateCapabilities=(not args.noCapabilities),
-                                     updatePictures=args.pictures, selective=args.selective, listNewTopics=args.listTopics)
+                                     updatePictures=args.pictures, selective=args.selective, listNewTopics=args.listTopics,
+                                     republishOnUpdate=args.republishOnUpdate)
     mqttCLient.enable_logger()
 
     if usetls:
@@ -264,8 +267,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
 
 
 class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-instance-attributes
-    def __init__(self, clientId=None, transport='tcp', interval=300, prefix='weconnect/0', ignore=0, updateCapabilities=True, updatePictures=True,
-                 selective=None, listNewTopics=False):
+    def __init__(self, clientId=None, transport='tcp', interval=300, prefix='weconnect/0', ignore=0,  # pylint: disable=too-many-arguments
+                 updateCapabilities=True, updatePictures=True, selective=None, listNewTopics=False, republishOnUpdate=False):
         super().__init__(client_id=clientId, transport=transport)
         self.weConnect = None
         self.prefix = prefix
@@ -282,6 +285,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.topicsChanged = False
         self.writeableTopics = []
         self.writeableTopicsChanged = False
+        self.republishOnUpdate = republishOnUpdate
 
         self.on_connect = self.on_connect_callback
         self.on_message = self.on_message_callback
@@ -335,9 +339,13 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.weConnect = weconnect.WeConnect(username=username, password=password, updateAfterLogin=False, updateCapabilities=self.updateCapabilities,
                                              updatePictures=self.updatePictures, maxAgePictures=maxAgePictures, selective=self.selective)
         self.weConnect.enableTracker()
-        self.weConnect.addObserver(self.onWeConnectEvent, addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED
-                                   | addressable.AddressableLeaf.ObserverEvent.ENABLED | addressable.AddressableLeaf.ObserverEvent.DISABLED,
-                                   priority=addressable.AddressableLeaf.ObserverPriority.USER_MID)
+        if self.republishOnUpdate:
+            flags = addressable.AddressableLeaf.ObserverEvent.UPDATED_FROM_SERVER | addressable.AddressableLeaf.ObserverEvent.ENABLED \
+                | addressable.AddressableLeaf.ObserverEvent.DISABLED
+        else:
+            flags = addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED | addressable.AddressableLeaf.ObserverEvent.ENABLED \
+                | addressable.AddressableLeaf.ObserverEvent.DISABLED
+        self.weConnect.addObserver(self.onWeConnectEvent, flags, priority=addressable.AddressableLeaf.ObserverPriority.USER_MID)
         self.setConnected(connected=True)
         self.setError(code=WeConnectErrors.SUCCESS)
 
@@ -375,9 +383,12 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             elif isinstance(element, addressable.AddressableAttribute):
                 if topic not in self.topics:
                     self.addTopic(topic)
-        elif flags & addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED:
+        elif flags & addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED \
+                or flags & addressable.AddressableLeaf.ObserverEvent.UPDATED_FROM_SERVER:
             if isinstance(element.value, (str, int, float)) or element.value is None:
                 convertedValue = element.value
+            if isinstance(element.value, (list)):
+                convertedValue = ', '.join([str(item.value) if isinstance(item, Enum) else str(item) for item in element.value])
             elif isinstance(element.value, Enum):
                 convertedValue = element.value.value
             elif isinstance(element.value, Image.Image):

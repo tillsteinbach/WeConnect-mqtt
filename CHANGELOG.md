@@ -2,7 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
-- No unreleased changes so far
+### Added
+- Add parameter --republish-on-update to publish on every update from server, not only on value changes
 
 ## [0.24.1] - 2022-01-12
 ### Fixed
