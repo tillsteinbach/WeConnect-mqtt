@@ -558,6 +558,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                 self.updateWeConnect()
         except KeyboardInterrupt:
             self.loop_stop(force=False)
+            self.weConnect.disconnect()
 
 
 class WeConnectErrors(Enum):
