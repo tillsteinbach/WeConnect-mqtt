@@ -76,8 +76,11 @@ There are also two topics to receive all available topics as a comma seperated l
 You can disable data for the cars capabilities with `--no-capabilities`
 If you only need a subset of the data you can use the `--selective` option. E.g. `--selective climatisation`
 
-### ASCII Art vehicle images
+### Images
 You can enable ASCII Art pictures of the cars with `--pictures`
+
+#### PNG vehicle images
+If your client can deal with PNG-images received through MQTT you can set `--picture-format png`
 
 ## Tested with
 - Volkswagen ID.3 Modelyear 2021
