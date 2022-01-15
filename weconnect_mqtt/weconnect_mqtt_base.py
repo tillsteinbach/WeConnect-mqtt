@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from enum import Enum
 import os
+from io import BytesIO
 import sys
 import socket
 import argparse
@@ -103,6 +104,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     weConnectGroup.add_argument('--selective', help='Just fetch status of a certain type', default=None, required=False, action='append',
                                 type=domain.Domain, choices=list(domain.Domain))
     parser.add_argument('--pictures', help='Add ASCII art pictures', action='store_true')
+    parser.add_argument('--picture-format', dest='pictureFormat', help='Format of the picture topics', default=PictureFormat.TXT, required=False,
+                        type=PictureFormat, choices=list(PictureFormat))
 
     loggingGroup = parser.add_argument_group('Logging')
     loggingGroup.add_argument('-v', '--verbose', action="append_const", help='Logging level (verbosity)', const=-1,)
@@ -190,7 +193,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, transport=args.transport, interval=args.interval,
                                      prefix=args.prefix, ignore=args.ignore, updateCapabilities=(not args.noCapabilities),
                                      updatePictures=args.pictures, selective=args.selective, listNewTopics=args.listTopics,
-                                     republishOnUpdate=args.republishOnUpdate)
+                                     republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat)
     mqttCLient.enable_logger()
 
     if usetls:
@@ -268,7 +271,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
 
 class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-instance-attributes
     def __init__(self, clientId=None, transport='tcp', interval=300, prefix='weconnect/0', ignore=0,  # pylint: disable=too-many-arguments
-                 updateCapabilities=True, updatePictures=True, selective=None, listNewTopics=False, republishOnUpdate=False):
+                 updateCapabilities=True, updatePictures=True, selective=None, listNewTopics=False, republishOnUpdate=False,
+                 pictureFormat=None):
         super().__init__(client_id=clientId, transport=transport)
         self.weConnect = None
         self.prefix = prefix
@@ -279,6 +283,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.lastSubscribe = None
         self.updateCapabilities = updateCapabilities
         self.updatePictures = updatePictures
+        self.pictureFormat = pictureFormat
         self.selective = selective
         self.listNewTopics = listNewTopics
         self.topics = []
@@ -392,7 +397,14 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             elif isinstance(element.value, Enum):
                 convertedValue = element.value.value
             elif isinstance(element.value, Image.Image):
-                convertedValue = util.imgToASCIIArt(element.value, columns=120, mode=ascii_magic.Modes.ASCII)
+                if self.pictureFormat == PictureFormat.TXT or self.pictureFormat is None:
+                    convertedValue = util.imgToASCIIArt(element.value, columns=120, mode=ascii_magic.Modes.ASCII)
+                elif self.pictureFormat == PictureFormat.PNG:
+                    img_io = BytesIO()
+                    element.value.save(img_io, 'PNG')
+                    convertedValue = img_io.getvalue()
+                else:
+                    convertedValue = util.imgToASCIIArt(element.value, columns=120, mode=ascii_magic.Modes.ASCII)
             else:
                 convertedValue = str(element.value)
             LOG.debug('%s%s, value changed: new value is: %s', self.prefix, element.getGlobalAddress(), convertedValue)
@@ -573,3 +585,11 @@ class WeConnectErrors(Enum):
     AUTHENTIFICATION = -8
     SET_FORMAT = -9
     SET_ERROR = -10
+
+
+class PictureFormat(Enum):
+    TXT = 'txt'
+    PNG = 'png'
+
+    def __str__(self):
+        return self.value
