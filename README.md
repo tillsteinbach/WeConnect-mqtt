@@ -89,12 +89,16 @@ If your client can deal with PNG-images received through MQTT you can set `--pic
 ## Reporting Issues
 Please feel free to open an issue at [GitHub Issue page](https://github.com/tillsteinbach/WeConnect-mqtt/issues) to report problems you found.
 
+## More Questions?
+Please see the wiki [Wiki](https://github.com/tillsteinbach/WeConnect-mqtt/wiki).
+
 ### Known Issues
 - The Tool is in alpha state and may change unexpectedly at any time!
 
 ## Related Projects:
 - [WeConnect-cli](https://github.com/tillsteinbach/WeConnect-cli): Commandline Interface to interact with the Volkswagen WeConnect Services
 - [WeConnect-python](https://github.com/tillsteinbach/WeConnect-python): Python API to connect to Volkswagen WeConnect Services
+- [VWsFriend](https://github.com/tillsteinbach/VWsFriend): VWsFriend is a software to visualize and record statistics of your car and allows control via HomeKit
 
 ## Seat, Cupra, Skoda IV, ...
 In an effort to try to make WeConnect-MQTT also to work with latest generation of vehicles from other volkswagen brands I'm looking for users to temporarily share access to their accounts. If you are willing to support please send me a message.
