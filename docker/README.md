@@ -46,9 +46,13 @@ pip install weconnect-mqtt
 ## Reporting Issues
 Please feel free to open an issue at [GitHub Issue page](https://github.com/tillsteinbach/WeConnect-mqtt/issues) to report problems you found.
 
+## More Questions?
+Please see the wiki [Wiki](https://github.com/tillsteinbach/WeConnect-mqtt/wiki) or start a [discussion](https://github.com/tillsteinbach/WeConnect-mqtt/discussions).
+
 ### Known Issues
 - The Tool is in alpha state and may change unexpectedly at any time!
 
 ## Related Projects:
 - [WeConnect-cli](https://github.com/tillsteinbach/WeConnect-cli): Commandline Interface to interact with the Volkswagen WeConnect Services
 - [WeConnect-python](https://github.com/tillsteinbach/WeConnect-python): Python API to connect to Volkswagen WeConnect Services
+- [VWsFriend](https://github.com/tillsteinbach/VWsFriend): VWsFriend is a software to visualize and record statistics of your car and allows control via HomeKit
