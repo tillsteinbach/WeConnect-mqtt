@@ -2,7 +2,14 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
-- no unreleased changes so far
+
+## [0.26.1] - 2022-01-17
+### Fixed
+- Catch socket error and retry after interval
+- Fixed a problem where the temperature of the climatization is always set to 20.5 C
+
+### Changed
+- Updated API to 0.32.1
 
 ## [0.26.0] - 2022-01-15
 ### Added
@@ -444,7 +451,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.26.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.26.1...HEAD
+[0.26.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.26.1
 [0.26.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.26.0
 [0.25.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.25.1
 [0.25.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.25.0
