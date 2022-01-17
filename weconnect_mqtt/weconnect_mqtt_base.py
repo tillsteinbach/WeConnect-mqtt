@@ -375,6 +375,11 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             errorMessage = f'API compatibility error during update. Will try again after configured interval of {self.interval}s'
             self.setError(code=WeConnectErrors.API_COMPATIBILITY, message=errorMessage)
             LOG.info(errorMessage)
+        except socket.error:
+            self.setConnected(connected=False)
+            errorMessage = f'Socket error during update. Will try again after configured interval of {self.interval}s'
+            self.setError(code=WeConnectErrors.RETRIEVAL_FAILED, message=errorMessage)
+            LOG.info(errorMessage)
         self.publishTopics()
 
     def onWeConnectEvent(self, element, flags):  # noqa: C901
