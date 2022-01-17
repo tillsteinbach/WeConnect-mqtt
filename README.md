@@ -90,7 +90,7 @@ If your client can deal with PNG-images received through MQTT you can set `--pic
 Please feel free to open an issue at [GitHub Issue page](https://github.com/tillsteinbach/WeConnect-mqtt/issues) to report problems you found.
 
 ## More Questions?
-Please see the wiki [Wiki](https://github.com/tillsteinbach/WeConnect-mqtt/wiki).
+Please see the wiki [Wiki](https://github.com/tillsteinbach/WeConnect-mqtt/wiki) or start a [discussion](https://github.com/tillsteinbach/WeConnect-mqtt/discussions).
 
 ### Known Issues
 - The Tool is in alpha state and may change unexpectedly at any time!
