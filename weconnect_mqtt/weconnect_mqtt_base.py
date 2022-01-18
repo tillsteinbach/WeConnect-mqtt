@@ -513,7 +513,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         del mqttc  # unused
         del obj  # unused
         if self.ignore > 0 and self.lastSubscribe is not None and (datetime.now() - self.lastSubscribe) < timedelta(seconds=self.ignore):
-            LOG.info('ignoring message from broker as it is withing --ignore-for delta')
+            LOG.info('ignoring message from broker as it is within --ignore-for delta')
         elif len(msg.payload) == 0:
             LOG.debug('ignoring empty message')
         elif msg.topic == f'{self.prefix}/mqtt/weconnectForceUpdate':
