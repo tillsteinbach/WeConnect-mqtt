@@ -1,2 +1,2 @@
-weconnect[Images]~=0.32.1
+weconnect[Images]~=0.33.0
 paho-mqtt~=1.6.1
