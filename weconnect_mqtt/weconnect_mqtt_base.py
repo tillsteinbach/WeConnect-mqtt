@@ -546,6 +546,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             if msg.topic.startswith(self.prefix):
                 address = msg.topic[len(self.prefix):]
                 attribute = self.weConnect.getByAddressString(address)
+                oldValue = attribute.value
                 if isinstance(attribute, addressable.ChangeableAttribute):
                     try:
                         attribute.value = msg.payload.decode()
@@ -554,14 +555,17 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                         errorMessage = f'Error setting value: {valueError}'
                         self.setError(code=WeConnectErrors.SET_FORMAT, message=errorMessage)
                         LOG.info(errorMessage)
+                        self.publish(topic=msg.topic, qos=1, retain=False, payload=oldValue)
                     except errors.SetterError as setterError:
                         errorMessage = f'Error setting value: {setterError}'
                         self.setError(code=WeConnectErrors.SET_ERROR, message=errorMessage)
                         LOG.info(errorMessage)
+                        self.publish(topic=msg.topic, qos=1, retain=False, payload=oldValue)
                 else:
                     errorMessage = f'Trying to change item that is not a changeable attribute {msg.topic}: {msg.payload}'
                     self.setError(code=WeConnectErrors.MESSAGE_NOT_UNDERSTOOD, message=errorMessage)
                     LOG.error(errorMessage)
+                    self.publish(topic=msg.topic, qos=1, retain=False, payload=oldValue)
             else:
                 errorMessage = f'I don\'t understand message {msg.topic}: {msg.payload}'
                 self.setError(code=WeConnectErrors.ATTRIBUTE_NOT_CHANGEABLE, message=errorMessage)
