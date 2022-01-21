@@ -394,7 +394,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                 if topic not in self.topics:
                     self.addTopic(topic)
         elif flags & addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED \
-                or flags & addressable.AddressableLeaf.ObserverEvent.UPDATED_FROM_SERVER:
+                or (self.republishOnUpdate and (flags & addressable.AddressableLeaf.ObserverEvent.UPDATED_FROM_SERVER)):
             if isinstance(element.value, (str, int, float)) or element.value is None:
                 convertedValue = element.value
             if isinstance(element.value, (list)):
