@@ -393,7 +393,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             elif isinstance(element, addressable.AddressableAttribute):
                 if topic not in self.topics:
                     self.addTopic(topic)
-        elif flags & addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED \
+        elif (flags & addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED) \
                 or (self.republishOnUpdate and (flags & addressable.AddressableLeaf.ObserverEvent.UPDATED_FROM_SERVER)):
             if isinstance(element.value, (str, int, float)) or element.value is None:
                 convertedValue = element.value
@@ -551,6 +551,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                     try:
                         attribute.value = msg.payload.decode()
                         self.setError(code=WeConnectErrors.SUCCESS)
+                        LOG.debug('Successfully set value')
                     except ValueError as valueError:
                         errorMessage = f'Error setting value: {valueError}'
                         self.setError(code=WeConnectErrors.SET_FORMAT, message=errorMessage)
