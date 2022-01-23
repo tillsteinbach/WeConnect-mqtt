@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.27.1] - 2022-01-23
+
+### Fixed
+- Fixed the conversion error when setting a wrong value
+
 ## [0.27.0] - 2022-01-23
 
 ### Changed

@@ -395,28 +395,29 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                     self.addTopic(topic)
         elif (flags & addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED) \
                 or (self.republishOnUpdate and (flags & addressable.AddressableLeaf.ObserverEvent.UPDATED_FROM_SERVER)):
-            if isinstance(element.value, (str, int, float)) or element.value is None:
-                convertedValue = element.value
-            if isinstance(element.value, (list)):
-                convertedValue = ', '.join([str(item.value) if isinstance(item, Enum) else str(item) for item in element.value])
-            elif isinstance(element.value, Enum):
-                convertedValue = element.value.value
-            elif isinstance(element.value, Image.Image):
-                if self.pictureFormat == PictureFormat.TXT or self.pictureFormat is None:
-                    convertedValue = util.imgToASCIIArt(element.value, columns=120, mode=ascii_magic.Modes.ASCII)
-                elif self.pictureFormat == PictureFormat.PNG:
-                    img_io = BytesIO()
-                    element.value.save(img_io, 'PNG')
-                    convertedValue = img_io.getvalue()
-                else:
-                    convertedValue = util.imgToASCIIArt(element.value, columns=120, mode=ascii_magic.Modes.ASCII)
-            else:
-                convertedValue = str(element.value)
+            convertedValue = self.convertValue(element.value)
             LOG.debug('%s%s, value changed: new value is: %s', self.prefix, element.getGlobalAddress(), convertedValue)
             self.publish(topic=f'{self.prefix}{element.getGlobalAddress()}', qos=1, retain=True, payload=convertedValue)
         elif flags & addressable.AddressableLeaf.ObserverEvent.DISABLED:
             LOG.debug('%s%s, value is diabled', self.prefix, element.getGlobalAddress())
             self.publish(topic=f'{self.prefix}{element.getGlobalAddress()}', qos=1, retain=True, payload='')
+
+    def convertValue(self, value):
+        if isinstance(value, (str, int, float)) or value is None:
+            return value
+        if isinstance(value, (list)):
+            return ', '.join([str(item.value) if isinstance(item, Enum) else str(item) for item in value])
+        if isinstance(value, Enum):
+            return value.value
+        if isinstance(value, Image.Image):
+            if self.pictureFormat == PictureFormat.TXT or self.pictureFormat is None:
+                return util.imgToASCIIArt(value, columns=120, mode=ascii_magic.Modes.ASCII)
+            if self.pictureFormat == PictureFormat.PNG:
+                img_io = BytesIO()
+                value.save(img_io, 'PNG')
+                return img_io.getvalue()
+            return util.imgToASCIIArt(value, columns=120, mode=ascii_magic.Modes.ASCII)
+        return str(value)
 
     def setConnected(self, connected=True):
         if connected != self.connected:
@@ -546,7 +547,6 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             if msg.topic.startswith(self.prefix):
                 address = msg.topic[len(self.prefix):]
                 attribute = self.weConnect.getByAddressString(address)
-                oldValue = attribute.value
                 if isinstance(attribute, addressable.ChangeableAttribute):
                     try:
                         attribute.value = msg.payload.decode()
@@ -556,17 +556,14 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                         errorMessage = f'Error setting value: {valueError}'
                         self.setError(code=WeConnectErrors.SET_FORMAT, message=errorMessage)
                         LOG.info(errorMessage)
-                        self.publish(topic=msg.topic, qos=1, retain=False, payload=oldValue)
                     except errors.SetterError as setterError:
                         errorMessage = f'Error setting value: {setterError}'
                         self.setError(code=WeConnectErrors.SET_ERROR, message=errorMessage)
                         LOG.info(errorMessage)
-                        self.publish(topic=msg.topic, qos=1, retain=False, payload=oldValue)
                 else:
                     errorMessage = f'Trying to change item that is not a changeable attribute {msg.topic}: {msg.payload}'
                     self.setError(code=WeConnectErrors.MESSAGE_NOT_UNDERSTOOD, message=errorMessage)
                     LOG.error(errorMessage)
-                    self.publish(topic=msg.topic, qos=1, retain=False, payload=oldValue)
             else:
                 errorMessage = f'I don\'t understand message {msg.topic}: {msg.payload}'
                 self.setError(code=WeConnectErrors.ATTRIBUTE_NOT_CHANGEABLE, message=errorMessage)
