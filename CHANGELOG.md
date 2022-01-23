@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.27.0] - 2022-01-23
+
+### Changed
+- All selective topics are now under "domains" topic ***Warning this is a breaking change in the topic naming, you have to change your subscriptions!***
+- Control commands are now much faster feedbacking due to a new feature that tracks if the command was successful
+- Updated API to 0.34.0
+
 ## [0.26.2] - 2022-01-18
 ### Fixed
 - Add new tags attribute
@@ -459,7 +466,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.26.2...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.27.0...HEAD
+[0.27.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.27.0
 [0.26.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.26.2
 [0.26.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.26.1
 [0.26.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.26.0
