@@ -301,14 +301,14 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
 
     def addTopic(self, topic, writeable=False):
         if topic not in self.topics:
-            self.topics.append(topic)
-            self.topics.sort()
-            self.topicsChanged = True
-
             if writeable:
                 self.writeableTopics.append(topic)
                 self.writeableTopics.sort()
                 self.writeableTopicsChanged = True
+            else:
+                self.topics.append(topic)
+                self.topics.sort()
+                self.topicsChanged = True
 
             if self.listNewTopics:
                 print(f'New topic: {topic}{" (writeable)" if writeable else ""}', flush=True)
@@ -386,6 +386,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         if flags & addressable.AddressableLeaf.ObserverEvent.ENABLED:
             topic = f'{self.prefix}{element.getGlobalAddress()}'
             if isinstance(element, addressable.ChangeableAttribute):
+                topic = topic + '_writetopic'
                 LOG.debug('Subscribe for attribute %s%s', self.prefix, element.getGlobalAddress())
                 self.subscribe(topic, qos=1)
                 if topic not in self.topics:
@@ -451,8 +452,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
 
         if rc == 0:
             LOG.info('Connected to MQTT broker')
-            topic = f'{self.prefix}/mqtt/weconnectForceUpdate'
-            self.publish(topic=topic, qos=1, payload=False)
+            topic = f'{self.prefix}/mqtt/weconnectForceUpdate_writetopic'
             self.subscribe(topic, qos=2)
             if topic not in self.topics:
                 self.addTopic(topic, writeable=True)
@@ -460,7 +460,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             topic = f'{self.prefix}/mqtt/weconnectUpdateInterval_s'
             self.publish(topic=topic, qos=1, retain=True,
                          payload=self.interval)
-            self.subscribe(topic, qos=1)
+            self.subscribe(topic + '_writetopic', qos=1)
             if topic not in self.topics:
                 self.addTopic(topic, writeable=True)
 
@@ -517,12 +517,12 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             LOG.info('ignoring message from broker as it is within --ignore-for delta')
         elif len(msg.payload) == 0:
             LOG.debug('ignoring empty message')
-        elif msg.topic == f'{self.prefix}/mqtt/weconnectForceUpdate':
+        elif msg.topic == f'{self.prefix}/mqtt/weconnectForceUpdate_writetopic':
             if msg.payload.lower() == b'True'.lower():
                 LOG.info('Update triggered by MQTT message')
                 self.updateWeConnect()
                 self.publish(topic=f'{self.prefix}/mqtt/weconnectForceUpdate', qos=2, payload=False)
-        elif msg.topic == f'{self.prefix}/mqtt/weconnectUpdateInterval_s':
+        elif msg.topic == f'{self.prefix}/mqtt/weconnectUpdateInterval_s_writetopic':
             if str(msg.payload.decode()).isnumeric():
                 newInterval = int(msg.payload)
                 if newInterval < 300:
@@ -546,24 +546,37 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         else:
             if msg.topic.startswith(self.prefix):
                 address = msg.topic[len(self.prefix):]
-                attribute = self.weConnect.getByAddressString(address)
-                if isinstance(attribute, addressable.ChangeableAttribute):
-                    try:
-                        attribute.value = msg.payload.decode()
-                        self.setError(code=WeConnectErrors.SUCCESS)
-                        LOG.debug('Successfully set value')
-                    except ValueError as valueError:
-                        errorMessage = f'Error setting value: {valueError}'
-                        self.setError(code=WeConnectErrors.SET_FORMAT, message=errorMessage)
-                        LOG.info(errorMessage)
-                    except errors.SetterError as setterError:
-                        errorMessage = f'Error setting value: {setterError}'
-                        self.setError(code=WeConnectErrors.SET_ERROR, message=errorMessage)
-                        LOG.info(errorMessage)
+                if address.endswith('_writetopic'):
+                    address = address[:-len('_writetopic')]
+
+                    attribute = self.weConnect.getByAddressString(address)
+                    if isinstance(attribute, addressable.ChangeableAttribute):
+                        try:
+                            attribute.value = msg.payload.decode()
+                            self.setError(code=WeConnectErrors.SUCCESS)
+                            LOG.debug('Successfully set value')
+                        except ValueError as valueError:
+                            errorMessage = f'Error setting value: {valueError}'
+                            self.setError(code=WeConnectErrors.SET_FORMAT, message=errorMessage)
+                            LOG.info(errorMessage)
+                        except errors.SetterError as setterError:
+                            errorMessage = f'Error setting value: {setterError}'
+                            self.setError(code=WeConnectErrors.SET_ERROR, message=errorMessage)
+                            LOG.info(errorMessage)
+                    else:
+                        errorMessage = f'Trying to change item that is not a changeable attribute {msg.topic}: {msg.payload}'
+                        self.setError(code=WeConnectErrors.MESSAGE_NOT_UNDERSTOOD, message=errorMessage)
+                        LOG.error(errorMessage)
                 else:
-                    errorMessage = f'Trying to change item that is not a changeable attribute {msg.topic}: {msg.payload}'
-                    self.setError(code=WeConnectErrors.MESSAGE_NOT_UNDERSTOOD, message=errorMessage)
-                    LOG.error(errorMessage)
+                    attribute = self.weConnect.getByAddressString(address)
+                    if isinstance(attribute, addressable.ChangeableAttribute):
+                        errorMessage = f'Trying to change item on not writeable topic {msg.topic}: {msg.payload}, please use {msg.topic}_writetopic instead'
+                        self.setError(code=WeConnectErrors.MESSAGE_NOT_UNDERSTOOD, message=errorMessage)
+                        LOG.error(errorMessage)
+                    else:
+                        errorMessage = f'Trying to change item that is not a changeable attribute {msg.topic}: {msg.payload}'
+                        self.setError(code=WeConnectErrors.MESSAGE_NOT_UNDERSTOOD, message=errorMessage)
+                        LOG.error(errorMessage)
             else:
                 errorMessage = f'I don\'t understand message {msg.topic}: {msg.payload}'
                 self.setError(code=WeConnectErrors.ATTRIBUTE_NOT_CHANGEABLE, message=errorMessage)
