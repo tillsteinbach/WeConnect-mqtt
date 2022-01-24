@@ -4,13 +4,20 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
-## [0.27.1] - 2022-01-23
+## [0.28.0] - 2022-01-24
+### Changed
+- All writable items have now two topics: topicname and topicname_writetopic ***Warning this is a breaking change in the topic naming, you have to change your subscriptions!***
+  ***Sorry! I was fed up with the way MQTT behaves when you subscribe to the same topic you publish to.***
+- Updated API to 0.35.0
 
+### Fixed
+- The changes fix several problems when messages are received that were published by WeConnect-MQTT itself
+
+## [0.27.1] - 2022-01-23
 ### Fixed
 - Fixed the conversion error when setting a wrong value
 
 ## [0.27.0] - 2022-01-23
-
 ### Changed
 - All selective topics are now under "domains" topic ***Warning this is a breaking change in the topic naming, you have to change your subscriptions!***
 - Control commands are now much faster feedbacking due to a new feature that tracks if the command was successful
@@ -471,7 +478,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.27.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.28.0...HEAD
+[0.28.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.28.0
 [0.27.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.27.1
 [0.27.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.27.0
 [0.26.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.26.2
