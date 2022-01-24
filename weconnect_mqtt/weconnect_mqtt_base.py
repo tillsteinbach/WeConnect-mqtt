@@ -462,7 +462,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                          payload=self.interval)
             self.subscribe(topic + '_writetopic', qos=1)
             if topic not in self.topics:
-                self.addTopic(topic, writeable=True)
+                self.addTopic(topic + '_writetopic', writeable=True)
 
             self.setConnected()
 
@@ -537,6 +537,8 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                                  payload=self.interval)
                 else:
                     self.interval = newInterval
+                    self.publish(topic=f'{self.prefix}/mqtt/weconnectUpdateInterval_s', qos=1, retain=True,
+                                 payload=self.interval)
                     LOG.info('New intervall set to %ds by MQTT message', self.interval)
             else:
                 errorMessage = f'MQTT message for new interval does not contain a number: {msg.payload.decode()}'
