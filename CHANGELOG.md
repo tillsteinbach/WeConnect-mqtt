@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.28.1] - 2022-01-28
+### Fixed
+- Login to WeConnect works again after changes on login page
+
+### Changed
+- Updated API to 0.35.1
+
 ## [0.28.0] - 2022-01-24
 ### Changed
 - All writable items have now two topics: topicname and topicname_writetopic ***Warning this is a breaking change in the topic naming, you have to change your subscriptions!***
@@ -478,7 +485,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.28.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.28.1...HEAD
+[0.28.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.28.1
 [0.28.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.28.0
 [0.27.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.27.1
 [0.27.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.27.0
