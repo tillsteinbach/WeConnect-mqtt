@@ -499,6 +499,8 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                     LOG.error('Could not reconnect to MQTT-Server: %s, will retry in 10 seconds', e)
                 except socket.timeout:
                     LOG.error('Could not reconnect to MQTT-Server due to timeout, will retry in 10 seconds')
+                except OSError as e:
+                    LOG.error('Could not reconnect to MQTT-Server: %s, will retry in 10 seconds', e)
                 finally:
                     time.sleep(10)
 
