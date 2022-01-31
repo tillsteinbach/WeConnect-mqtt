@@ -2,7 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
-- No unreleased changes so far
+### Changed
+- Refactors the OAuth procedure
+
+### Added
+- Add authentification for WeCharge
 
 ## [0.28.1] - 2022-01-28
 ### Fixed
