@@ -257,11 +257,11 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
         mqttCLient.weConnect.persistTokens()
     except KeyboardInterrupt:
         pass
-    except weconnect.AuthentificationError as e:
+    except errors.AuthentificationError as e:
         errorMessage = f'There was a problem when authenticating with WeConnect: {e}'
         mqttCLient.setError(code=WeConnectErrors.AUTHENTIFICATION, message=errorMessage)
         LOG.critical(errorMessage)
-    except weconnect.APICompatibilityError as e:
+    except errors.APICompatibilityError as e:
         errorMessage = f'There was a problem when communicating with WeConnect.  If this problem persists please open a bug report: {e}'
         mqttCLient.setError(code=WeConnectErrors.API_COMPATIBILITY, message=errorMessage)
         LOG.critical(errorMessage)
