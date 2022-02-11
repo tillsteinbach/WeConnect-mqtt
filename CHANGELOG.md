@@ -2,11 +2,17 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+- No unreleased changes so far
+
+## [0.29.0] - 2022-02-11
+### Fixed
+- Login to WeConnect works again after changes on login page
+- Fixes json output for values that are zero
+- Fixes for chargePower, chargeRate and remaining climatisationTime
+
 ### Changed
 - Refactors the OAuth procedure
-
-### Added
-- Add authentification for WeCharge
+- Updated API to 0.36.3
 
 ## [0.28.1] - 2022-01-28
 ### Fixed
@@ -489,7 +495,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.28.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.29.0...HEAD
+[0.29.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.29.0
 [0.28.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.28.1
 [0.28.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.28.0
 [0.27.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.27.1

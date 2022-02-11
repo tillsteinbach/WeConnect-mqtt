@@ -152,6 +152,9 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
             secrets = netrc.netrc(file=args.netrc)
             secret = secrets.authenticators("volkswagen.de")
             username, _, password = secret
+        except netrc.NetrcParseError as err:
+            LOG.error('Authentification using .netrc failed: %s', err)
+            sys.exit(1)
         except TypeError:
             if not args.username:
                 LOG.error('volkswagen.de entry was not found in %s netrc-file. Create it or provide at least a username'
