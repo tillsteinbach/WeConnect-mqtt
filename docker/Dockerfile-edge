@@ -1,13 +1,19 @@
+FROM python:3.9.5-alpine as base
+RUN apk add --update tzdata
+
 FROM python:3.9.5-alpine
 ARG VERSION
 ENV USER=
 ENV PASSWORD=
 ENV BROKER_ADDRESS=
 ENV ADDITIONAL_PARAMETERS=
+ENV TZ=
 
 COPY . weconnect-mqtt
 WORKDIR ./weconnect-mqtt/
 
+# Copy zoneinfo
+COPY --from=base /usr/share/zoneinfo /usr/share/zoneinfo
 # Pillow depenencies
 RUN apk --no-cache add --virtual build-dependencies build-base \
     && apk --no-cache add jpeg-dev \
