@@ -133,6 +133,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     args = parser.parse_args()
     try:
         locale.setlocale(locale.LC_ALL, args.locale)
+        if args.timeFormat == '':
+            args.timeFormat = locale.nl_langinfo(locale.D_T_FMT)
     except locale.Error as err:
         LOG.error('Cannot set locale: %s', err)
         sys.exit(1)
