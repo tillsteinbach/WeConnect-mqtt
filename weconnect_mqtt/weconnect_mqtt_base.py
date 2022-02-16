@@ -4,6 +4,7 @@ import os
 from io import BytesIO
 import sys
 import socket
+import locale
 import re
 import argparse
 import netrc
@@ -11,6 +12,8 @@ import getpass
 import logging
 import time
 import ssl
+
+from dateutil import tz
 
 import paho.mqtt.client
 from PIL import Image
@@ -107,6 +110,14 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     weConnectGroup.add_argument('--no-capabilities', dest='noCapabilities', help='Do not add capabilities', action='store_true')
     weConnectGroup.add_argument('--selective', help='Just fetch status of a certain type', default=None, required=False, action='append',
                                 type=domain.Domain, choices=list(domain.Domain))
+    weConnectGroup.add_argument('--convert-times', dest='convertTimes',
+                                help='Convert all times from UTC to timezone, e.g. --convert-times \'Europe/Berlin\', leave empty to use system timezone',
+                                nargs='?', const='', default=None, type=str)
+    weConnectGroup.add_argument('--timeformat', dest='timeFormat',
+                                help='Convert times using the timeformat provided default is ISO format, leave argument empty to use system default',
+                                nargs='?', const='', default=None, type=str)
+    weConnectGroup.add_argument('--locale',
+                                help='Use specified locale, leave argument empty to use system default', default='', type=str)
     parser.add_argument('--pictures', help='Add ASCII art pictures', action='store_true')
     parser.add_argument('--picture-format', dest='pictureFormat', help='Format of the picture topics', default=PictureFormat.TXT, required=False,
                         type=PictureFormat, choices=list(PictureFormat))
@@ -120,6 +131,11 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     loggingGroup.add_argument('--hide-repeated-log', dest='hideRepeatedLog', help='Hide repeated log messages from the same module', action='store_true')
 
     args = parser.parse_args()
+    try:
+        locale.setlocale(locale.LC_ALL, args.locale)
+    except locale.Error as err:
+        LOG.error('Cannot set locale: %s', err)
+        sys.exit(1)
 
     logLevel = LOG_LEVELS.index(DEFAULT_LOG_LEVEL)
     for adjustment in args.verbose or ():
@@ -205,10 +221,18 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
         LOG.error('Problem with provided regex %s: %s', topicFilterRegexString, err)
         sys.exit(1)
 
+    convertTimezone = None
+    if args.convertTimes is not None:
+        if args.convertTimes == '':
+            convertTimezone = datetime.now().astimezone().tzinfo
+        else:
+            convertTimezone = tz.gettz(args.convertTimes)
+
     mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, transport=args.transport, interval=args.interval,
                                      prefix=args.prefix, ignore=args.ignore, updateCapabilities=(not args.noCapabilities),
                                      updatePictures=args.pictures, selective=args.selective, listNewTopics=args.listTopics,
-                                     republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat, topicFilterRegex=topicFilterRegex)
+                                     republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat, topicFilterRegex=topicFilterRegex,
+                                     convertTimezone=convertTimezone, timeFormat=args.timeFormat)
     mqttCLient.enable_logger()
 
     if usetls:
@@ -287,7 +311,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
 class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-instance-attributes
     def __init__(self, clientId=None, transport='tcp', interval=300, prefix='weconnect/0', ignore=0,  # pylint: disable=too-many-arguments
                  updateCapabilities=True, updatePictures=True, selective=None, listNewTopics=False, republishOnUpdate=False,
-                 pictureFormat=None, topicFilterRegex=None):
+                 pictureFormat=None, topicFilterRegex=None, convertTimezone=None, timeFormat=None):
         super().__init__(client_id=clientId, transport=transport)
         self.weConnect = None
         self.prefix = prefix
@@ -307,6 +331,8 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.writeableTopicsChanged = False
         self.republishOnUpdate = republishOnUpdate
         self.topicFilterRegex = topicFilterRegex
+        self.convertTimezone = convertTimezone
+        self.timeFormat = timeFormat
 
         self.on_connect = self.on_connect_callback
         self.on_message = self.on_message_callback
@@ -429,6 +455,13 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             return ', '.join([str(item.value) if isinstance(item, Enum) else str(item) for item in value])
         if isinstance(value, Enum):
             return value.value
+        if isinstance(value, datetime):
+            convertedTime = value
+            if self.convertTimezone is not None:
+                convertedTime = value.astimezone(self.convertTimezone)
+            if self.timeFormat is not None:
+                return convertedTime.strftime(self.timeFormat)
+            return str(value)
         if isinstance(value, Image.Image):
             if self.pictureFormat == PictureFormat.TXT or self.pictureFormat is None:
                 return util.imgToASCIIArt(value, columns=120, mode=ascii_magic.Modes.ASCII)
