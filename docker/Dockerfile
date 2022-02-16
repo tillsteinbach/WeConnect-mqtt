@@ -8,6 +8,7 @@ ENV PASSWORD=
 ENV BROKER_ADDRESS=
 ENV ADDITIONAL_PARAMETERS=
 ENV TZ=
+ENV MUSL_LOCPATH="/usr/share/i18n/locales/musl"
 
 # Copy zoneinfo
 COPY --from=base /usr/share/zoneinfo /usr/share/zoneinfo
@@ -21,6 +22,8 @@ RUN apk --no-cache add --virtual build-dependencies build-base \
                           tiff-dev \
                           tk-dev \
                           tcl-dev \
+                          musl-locales \
+                          musl-locales-lang \
     && pip install weconnect-mqtt==${VERSION} \
     && apk del build-dependencies
 

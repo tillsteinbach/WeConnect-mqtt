@@ -8,6 +8,7 @@ ENV PASSWORD=
 ENV BROKER_ADDRESS=
 ENV ADDITIONAL_PARAMETERS=
 ENV TZ=
+ENV MUSL_LOCPATH="/usr/share/i18n/locales/musl"
 
 COPY . weconnect-mqtt
 WORKDIR ./weconnect-mqtt/
@@ -24,6 +25,8 @@ RUN apk --no-cache add --virtual build-dependencies build-base \
                           tiff-dev \
                           tk-dev \
                           tcl-dev \
+                          musl-locales \
+                          musl-locales-lang \
     && pip3 install --no-cache-dir -r requirements.txt \
     && pip3 install --no-cache-dir . \
     && apk del build-dependencies
