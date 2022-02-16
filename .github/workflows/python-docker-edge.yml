@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
      - .github/workflows/python-docker-edge.yml
+     - docker/Dockerfile-edge
      - weconnect_mqtt/**
      - '**requirements.txt'
      - '**.cfg'
