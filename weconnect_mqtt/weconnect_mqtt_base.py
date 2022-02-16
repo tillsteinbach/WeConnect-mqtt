@@ -4,6 +4,7 @@ import os
 from io import BytesIO
 import sys
 import socket
+import re
 import argparse
 import netrc
 import getpass
@@ -84,6 +85,9 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     parser.add_argument('--republish-on-update', dest='republishOnUpdate', action='store_true',
                         help='Republish all topics on every update, not just when the value changes.')
     parser.add_argument('--list-topics', dest='listTopics', help='List new topics when created the first time', action='store_true')
+    parser.add_argument('--topic-filter-regex', dest='topicFilterRegexString', type=str,
+                        default='<PREFIX>/vehicles/[0-9A-Z]+/domains/[a-zA-Z]+/[a-zA-Z]+/request/.*',
+                        help='Filter topics by regex. Default is: "<PREFIX>/vehicles/[0-9A-Z]+/domains/[a-zA-Z]+/[a-zA-Z]+/request/.*"')
 
     weConnectGroup = parser.add_argument_group('WeConnect')
     weConnectGroup.add_argument('-u', '--username', type=str, help='Username of Volkswagen id', required=False)
@@ -193,10 +197,18 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
                           netRcFilename)
                 sys.exit(1)
 
+    try:
+        topicFilterRegexString = args.topicFilterRegexString
+        topicFilterRegexString.replace('<PREFIX>', args.prefix)
+        topicFilterRegex = re.compile(args.topicFilterRegexString)
+    except re.error as err:
+        LOG.error('Problem with provided regex %s: %s', topicFilterRegexString, err)
+        sys.exit(1)
+
     mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, transport=args.transport, interval=args.interval,
                                      prefix=args.prefix, ignore=args.ignore, updateCapabilities=(not args.noCapabilities),
                                      updatePictures=args.pictures, selective=args.selective, listNewTopics=args.listTopics,
-                                     republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat)
+                                     republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat, topicFilterRegex=topicFilterRegex)
     mqttCLient.enable_logger()
 
     if usetls:
@@ -275,7 +287,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
 class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-instance-attributes
     def __init__(self, clientId=None, transport='tcp', interval=300, prefix='weconnect/0', ignore=0,  # pylint: disable=too-many-arguments
                  updateCapabilities=True, updatePictures=True, selective=None, listNewTopics=False, republishOnUpdate=False,
-                 pictureFormat=None):
+                 pictureFormat=None, topicFilterRegex=None):
         super().__init__(client_id=clientId, transport=transport)
         self.weConnect = None
         self.prefix = prefix
@@ -294,6 +306,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.writeableTopics = []
         self.writeableTopicsChanged = False
         self.republishOnUpdate = republishOnUpdate
+        self.topicFilterRegex = topicFilterRegex
 
         self.on_connect = self.on_connect_callback
         self.on_message = self.on_message_callback
@@ -386,8 +399,11 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.publishTopics()
 
     def onWeConnectEvent(self, element, flags):  # noqa: C901
+        topic = f'{self.prefix}{element.getGlobalAddress()}'
+        if self.topicFilterRegex is not None and self.topicFilterRegex.match(topic):
+            return
+
         if flags & addressable.AddressableLeaf.ObserverEvent.ENABLED:
-            topic = f'{self.prefix}{element.getGlobalAddress()}'
             if isinstance(element, addressable.ChangeableAttribute):
                 topic = topic + '_writetopic'
                 LOG.debug('Subscribe for attribute %s%s', self.prefix, element.getGlobalAddress())
