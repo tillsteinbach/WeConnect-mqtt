@@ -461,7 +461,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                 convertedTime = value.astimezone(self.convertTimezone)
             if self.timeFormat is not None:
                 return convertedTime.strftime(self.timeFormat)
-            return str(value)
+            return str(convertedTime)
         if isinstance(value, Image.Image):
             if self.pictureFormat == PictureFormat.TXT or self.pictureFormat is None:
                 return util.imgToASCIIArt(value, columns=120, mode=ascii_magic.Modes.ASCII)
