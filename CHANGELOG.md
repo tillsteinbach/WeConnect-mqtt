@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
-## [0.30.0] - in testing
+## [0.30.0] - 2022-02-25
 ### Fixed
 - Requests tracking behaviour
 - Catch error when token could not be fetched
@@ -516,7 +516,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.29.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.30.0...HEAD
+[0.30.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.30.0
 [0.29.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.29.1
 [0.29.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.29.0
 [0.28.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.28.1
