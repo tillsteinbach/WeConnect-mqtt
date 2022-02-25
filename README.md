@@ -82,6 +82,11 @@ You can enable ASCII Art pictures of the cars with `--pictures`
 #### PNG vehicle images
 If your client can deal with PNG-images received through MQTT you can set `--picture-format png`
 
+### Times
+By default the times coming from the car are UTC isoformat. You can convert times to your local timezone by adding `--convert-times`. Convert times will use the systems timezone. If you want to set a specific timezone use e.g. `--convert-times Europe/Berlin`.
+You can format times in your local format by adding `--timeformat`. This will use the default Date/Time format of your locale setting. If you want to set a specific format use e.g. `--timeformat '%a %d %b %Y %T'`.
+If you want to set the date in another language than default on your system use e.g. `--locale de_DE`.
+
 ## Tested with
 - Volkswagen ID.3 Modelyear 2021
 - Volkswagen Passat GTE Modelyear 2021

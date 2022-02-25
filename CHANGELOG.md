@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.30.0] - in testing
+### Fixed
+- Requests tracking behaviour
+- Catch error when token could not be fetched
+
+### Changed
+- Requests changed from list to dict
+
+### Added
+- Possibility to use temperature when startng climatisation
+- Added fail_no_external_power to generic request status
+- Added chargeType attribute to chargingStatus
+- Added chargingSettings attribute to chargingStatus
+
 ## [0.29.1] - 2022-02-12
 ### Fixed
 - Fixes bug in charging state API fixing procedure
