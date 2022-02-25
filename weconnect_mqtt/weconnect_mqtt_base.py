@@ -405,8 +405,15 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             self.setConnected(connected=True)
             self.setError(code=WeConnectErrors.SUCCESS)
             topic = f'{self.prefix}/mqtt/weconnectUpdated'
+            convertedTime = datetime.utcnow().replace(microsecond=0, tzinfo=timezone.utc)
+            if self.convertTimezone is not None:
+                convertedTime = convertedTime.astimezone(self.convertTimezone)
+            if self.timeFormat is not None:
+                convertedTimeString = convertedTime.strftime(self.timeFormat)
+            else:
+                convertedTimeString = convertedTime.isoformat()
             self.publish(topic=topic, qos=1, retain=True,
-                         payload=datetime.utcnow().replace(microsecond=0, tzinfo=timezone.utc).isoformat())
+                         payload=convertedTimeString)
             if topic not in self.topics:
                 self.addTopic(topic)
         except errors.RetrievalError:
