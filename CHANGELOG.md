@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.30.2] - 2022-03-04
+### Fixed
+- Catch error when server is not responding correctly during login
+
+### Changed
+- Updated API to 0.37.2
+
 ## [0.30.1] - 2022-02-28
 ### Fixed
 - Bug in charging control
@@ -523,7 +530,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.30.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.30.2...HEAD
+[0.30.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.30.2
 [0.30.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.30.1
 [0.30.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.30.0
 [0.29.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.29.1
