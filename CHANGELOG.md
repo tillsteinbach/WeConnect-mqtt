@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.31.0] - 2022-03-19
+### Added
+- Added BatteryPowerLevel 'off' in readiness status.
+- Added ClimatizationStatus 'invalid'
+- Added occurringOn and startTime in singe timer
+
 ## [0.30.2] - 2022-03-04
 ### Fixed
 - Catch error when server is not responding correctly during login
@@ -530,7 +536,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.30.2...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.31.0...HEAD
+[0.31.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.31.0
 [0.30.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.30.2
 [0.30.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.30.1
 [0.30.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.30.0
