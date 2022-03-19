@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file.
 - Added ClimatizationStatus 'invalid'
 - Added occurringOn and startTime in singe timer
 
+### Changed
+- Updated API to 0.38.0
+
 ## [0.30.2] - 2022-03-04
 ### Fixed
 - Catch error when server is not responding correctly during login
