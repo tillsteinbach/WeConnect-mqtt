@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.31.1] - 2022-03-22
+### Changed
+- Improved error messages on login errors
+- Updated API to 0.38.1
+
 ## [0.31.0] - 2022-03-19
 ### Added
 - Added BatteryPowerLevel 'off' in readiness status.
@@ -539,7 +544,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.31.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.31.1...HEAD
+[0.31.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.31.1
 [0.31.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.31.0
 [0.30.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.30.2
 [0.30.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.30.1
