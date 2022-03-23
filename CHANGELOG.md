@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.32.0] - in testing
+### Added
+- Added option --with-raw-json-topic that publishes all data as a single json string
+
 ## [0.31.1] - 2022-03-22
 ### Changed
 - Improved error messages on login errors

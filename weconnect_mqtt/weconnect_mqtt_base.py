@@ -121,6 +121,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     parser.add_argument('--pictures', help='Add ASCII art pictures', action='store_true')
     parser.add_argument('--picture-format', dest='pictureFormat', help='Format of the picture topics', default=PictureFormat.TXT, required=False,
                         type=PictureFormat, choices=list(PictureFormat))
+    parser.add_argument('--with-raw-json-topic', dest='withRawJsonTopic', help='Adds topic <PREFIX>/rawjson with all information in one json string.'
+                        ' Topic is updated on change only', action='store_true')
 
     loggingGroup = parser.add_argument_group('Logging')
     loggingGroup.add_argument('-v', '--verbose', action="append_const", help='Logging level (verbosity)', const=-1,)
@@ -234,7 +236,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
                                      prefix=args.prefix, ignore=args.ignore, updateCapabilities=(not args.noCapabilities),
                                      updatePictures=args.pictures, selective=args.selective, listNewTopics=args.listTopics,
                                      republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat, topicFilterRegex=topicFilterRegex,
-                                     convertTimezone=convertTimezone, timeFormat=args.timeFormat)
+                                     convertTimezone=convertTimezone, timeFormat=args.timeFormat, withRawJsonTopic=args.withRawJsonTopic)
     mqttCLient.enable_logger()
 
     if usetls:
@@ -313,7 +315,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
 class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-instance-attributes
     def __init__(self, clientId=None, transport='tcp', interval=300, prefix='weconnect/0', ignore=0,  # pylint: disable=too-many-arguments
                  updateCapabilities=True, updatePictures=True, selective=None, listNewTopics=False, republishOnUpdate=False,
-                 pictureFormat=None, topicFilterRegex=None, convertTimezone=None, timeFormat=None):
+                 pictureFormat=None, topicFilterRegex=None, convertTimezone=None, timeFormat=None, withRawJsonTopic=False):
         super().__init__(client_id=clientId, transport=transport)
         self.weConnect = None
         self.prefix = prefix
@@ -335,6 +337,8 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.topicFilterRegex = topicFilterRegex
         self.convertTimezone = convertTimezone
         self.timeFormat = timeFormat
+        self.hasChanges = False
+        self.withRawJsonTopic = withRawJsonTopic
 
         self.on_connect = self.on_connect_callback
         self.on_message = self.on_message_callback
@@ -398,8 +402,9 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.setConnected(connected=True)
         self.setError(code=WeConnectErrors.SUCCESS)
 
-    def updateWeConnect(self):
+    def updateWeConnect(self):  # noqa: C901
         LOG.info('Update data from WeConnect')
+        self.hasChanges = False
         try:
             self.weConnect.update(updateCapabilities=self.updateCapabilities, updatePictures=self.updatePictures, selective=self.selective)
             self.setConnected(connected=True)
@@ -436,9 +441,16 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             errorMessage = f'Socket error during update. Will try again after configured interval of {self.interval}s'
             self.setError(code=WeConnectErrors.RETRIEVAL_FAILED, message=errorMessage)
             LOG.info(errorMessage)
+        if self.withRawJsonTopic and self.hasChanges:
+            topic = f'{self.prefix}/rawjson'
+            if topic not in self.topics:
+                self.addTopic(topic)
+            json = self.weConnect.toJSON()
+            self.publish(topic=topic, qos=1, retain=True, payload=json)
         self.publishTopics()
 
     def onWeConnectEvent(self, element, flags):  # noqa: C901
+        self.hasChanges = True
         topic = f'{self.prefix}{element.getGlobalAddress()}'
         if self.topicFilterRegex is not None and self.topicFilterRegex.match(topic):
             return
