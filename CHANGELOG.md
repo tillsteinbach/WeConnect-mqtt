@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
-## [0.32.0] - in testing
+## [0.32.0] - 2022-03-23
 ### Added
 - Added option --with-raw-json-topic that publishes all data as a single json string
 
@@ -548,7 +548,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.31.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.32.0...HEAD
+[0.32.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.32.0
 [0.31.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.31.1
 [0.31.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.31.0
 [0.30.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.30.2

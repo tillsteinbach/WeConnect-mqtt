@@ -87,6 +87,9 @@ By default the times coming from the car are UTC isoformat. You can convert time
 You can format times in your local format by adding `--timeformat`. This will use the default Date/Time format of your locale setting. If you want to set a specific format use e.g. `--timeformat '%a %d %b %Y %T'`.
 If you want to set the date in another language than default on your system use e.g. `--locale de_DE`.
 
+### Raw JSON
+If you want to continue working with the whole data you can also enable the topic `weconnect/0/rawjson` by adding `--with-raw-json-topic`. The topic is published on every change of the json string.
+
 ## Tested with
 - Volkswagen ID.3 Modelyear 2021
 - Volkswagen Passat GTE Modelyear 2021
