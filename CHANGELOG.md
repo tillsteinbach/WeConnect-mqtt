@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
-## [0.34.0] - in testing
+## [0.34.0] - 2022-05-12
 ### Changed
 - Updated API to 0.40.0
 
