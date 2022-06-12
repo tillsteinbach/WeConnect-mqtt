@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.35.0] - 2022-06-12
+### Changed
+- Updated API to 0.41.0
+
+### Added
+- selective allCapable added to only fetch data that is provided by the car
+
+### Fixed
+- Errors in domains are catched and do not produce warnings anymore
+
 ## [0.34.0] - 2022-05-12
 ### Changed
 - Updated API to 0.40.0
@@ -559,7 +569,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.34.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.35.0...HEAD
+[0.35.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.35.0
 [0.34.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.34.0
 [0.33.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.33.0
 [0.32.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.32.0
