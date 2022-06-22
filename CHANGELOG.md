@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.36.0] - 2022-06-22 (Happy birthday Peer!)
+### Added
+- Added new attributes: externalPower, brandCode, autoUnlockPlugWhenChargedAC, ledColor (warning, it is not yet clear what values are allowed, so use these with caution)
+
+### Changed
+- Updated API to 0.43.0
+
 ## [0.35.0] - 2022-06-12
 ### Changed
 - Updated API to 0.41.0
@@ -569,7 +576,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.35.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.36.0...HEAD
+[0.36.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.36.0
 [0.35.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.35.0
 [0.34.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.34.0
 [0.33.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.33.0
