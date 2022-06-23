@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.36.2] - 2022-06-23
+### Added
+- Added new values for attribute externalPower: unsupported
+- Added new values for attribute chragingStatus: unsupported
+
+### Changed
+- Updated API to 0.43.2
+
 ## [0.36.1] - 2022-06-23
 ### Added
 - Added new values for attribute externalPower: active
@@ -584,7 +592,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.36.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.36.2...HEAD
+[0.36.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.36.2
 [0.36.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.36.1
 [0.36.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.36.0
 [0.35.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.35.0
