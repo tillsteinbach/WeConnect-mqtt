@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.37.2] - 2022-06-28
+### Fixed
+- Fixed error with warning light icon
+
+### Changed
+- Updated API to 0.44.2
+
 ## [0.37.1] - 2022-06-28
 ### Fixed
 - Fixed setting climatisation settings (all but climatisationWithoutExternalPower)
@@ -612,7 +619,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.37.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.37.2...HEAD
+[0.37.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.37.2
 [0.37.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.37.1
 [0.37.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.37.0
 [0.36.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.36.2
