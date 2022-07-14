@@ -4,12 +4,17 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.38.1] - 2022-07-14
+### Added
+- Passive mode
+
 ## [0.38.0] - 2022-07-14
 ### Fixed
 - Regular relogin to fix problem with data not showing anymore
 
 ### Changed
 - Refactoring to use WeConnect-mqtt from inside VWsFriend
+- Updated API to 0.45.0
 
 ## [0.37.2] - 2022-06-28
 ### Fixed
@@ -626,7 +631,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.38.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.38.1...HEAD
+[0.38.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.38.1
 [0.38.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.38.0
 [0.37.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.37.2
 [0.37.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.37.1

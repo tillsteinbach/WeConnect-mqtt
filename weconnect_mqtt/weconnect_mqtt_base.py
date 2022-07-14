@@ -318,7 +318,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
 class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-instance-attributes
     def __init__(self, clientId=None, transport='tcp', interval=300, prefix='weconnect/0', ignore=0,  # pylint: disable=too-many-arguments
                  updateCapabilities=True, updatePictures=True, selective=None, listNewTopics=False, republishOnUpdate=False,
-                 pictureFormat=None, topicFilterRegex=None, convertTimezone=None, timeFormat=None, withRawJsonTopic=False):
+                 pictureFormat=None, topicFilterRegex=None, convertTimezone=None, timeFormat=None, withRawJsonTopic=False, passive=False):
         super().__init__(client_id=clientId, transport=transport)
         self.weConnect = None
         self.prefix = prefix
@@ -342,6 +342,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.timeFormat = timeFormat
         self.hasChanges = False
         self.withRawJsonTopic = withRawJsonTopic
+        self.passive = passive
 
         self.on_connect = self.on_connect_callback
         self.on_message = self.on_message_callback
@@ -405,6 +406,8 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.setError(code=WeConnectErrors.SUCCESS)
 
     def updateWeConnect(self):  # noqa: C901
+        if self.passive:
+            return
         LOG.info('Update data from WeConnect')
         self.hasChanges = False
         try:
@@ -532,17 +535,18 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
 
         if rc == 0:
             LOG.info('Connected to MQTT broker')
-            topic = f'{self.prefix}/mqtt/weconnectForceUpdate_writetopic'
-            self.subscribe(topic, qos=2)
-            if topic not in self.topics:
-                self.addTopic(topic, writeable=True)
+            if not self.passive:
+                topic = f'{self.prefix}/mqtt/weconnectForceUpdate_writetopic'
+                self.subscribe(topic, qos=2)
+                if topic not in self.topics:
+                    self.addTopic(topic, writeable=True)
 
-            topic = f'{self.prefix}/mqtt/weconnectUpdateInterval_s'
-            self.publish(topic=topic, qos=1, retain=True,
-                         payload=self.interval)
-            self.subscribe(topic + '_writetopic', qos=1)
-            if topic not in self.topics:
-                self.addTopic(topic + '_writetopic', writeable=True)
+                topic = f'{self.prefix}/mqtt/weconnectUpdateInterval_s'
+                self.publish(topic=topic, qos=1, retain=True,
+                             payload=self.interval)
+                self.subscribe(topic + '_writetopic', qos=1)
+                if topic not in self.topics:
+                    self.addTopic(topic + '_writetopic', writeable=True)
 
             self.setConnected()
 
@@ -599,12 +603,12 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             LOG.info('ignoring message from broker as it is within --ignore-for delta')
         elif len(msg.payload) == 0:
             LOG.debug('ignoring empty message')
-        elif msg.topic == f'{self.prefix}/mqtt/weconnectForceUpdate_writetopic':
+        elif msg.topic == f'{self.prefix}/mqtt/weconnectForceUpdate_writetopic' and not self.passive:
             if msg.payload.lower() == b'True'.lower():
                 LOG.info('Update triggered by MQTT message')
                 self.updateWeConnect()
                 self.publish(topic=f'{self.prefix}/mqtt/weconnectForceUpdate', qos=2, payload=False)
-        elif msg.topic == f'{self.prefix}/mqtt/weconnectUpdateInterval_s_writetopic':
+        elif msg.topic == f'{self.prefix}/mqtt/weconnectUpdateInterval_s_writetopic' and not self.passive:
             if str(msg.payload.decode()).isnumeric():
                 newInterval = int(msg.payload)
                 if newInterval < 300:
