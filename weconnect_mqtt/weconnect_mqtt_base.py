@@ -268,7 +268,10 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     try:
         while True:
             try:
-                mqttCLient.connectWeConnect(username=username, password=password, maxAgePictures=args.pictureCache)
+                weConnect = weconnect.WeConnect(username=username, password=password, updateAfterLogin=False, updateCapabilities=mqttCLient.updateCapabilities,
+                                                updatePictures=mqttCLient.updatePictures, maxAgePictures=args.pictureCache, selective=mqttCLient.selective,
+                                                forceReloginAfter=21600)
+                mqttCLient.connectWeConnect(weConnect)
                 break
             except exceptions.ConnectionError as e:
                 LOG.error('Could not connect to VW-Server: %s, will retry in 10 seconds', e)
@@ -387,11 +390,9 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             pass
         super().disconnect(reasoncode, properties)
 
-    def connectWeConnect(self, username, password, maxAgePictures):
+    def connectWeConnect(self, weConnect):
         LOG.info('Connect to WeConnect')
-        self.weConnect = weconnect.WeConnect(username=username, password=password, updateAfterLogin=False, updateCapabilities=self.updateCapabilities,
-                                             updatePictures=self.updatePictures, maxAgePictures=maxAgePictures, selective=self.selective,
-                                             forceReloginAfter=21600)
+        self.weConnect = weConnect
         self.weConnect.enableTracker()
         if self.republishOnUpdate:
             flags = addressable.AddressableLeaf.ObserverEvent.UPDATED_FROM_SERVER | addressable.AddressableLeaf.ObserverEvent.ENABLED \
