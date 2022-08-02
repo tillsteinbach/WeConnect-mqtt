@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.38.3] - 2022-08-02
+### Added
+- Attributes for diesel cars
+- New status departureTimersStatus & chargingProfilesStatus
+- Support for python 3.10
+
+### Changed
+- Updated API to 0.46.0
+
 ## [0.38.2] - 2022-07-25
 ### Fixed
 - ReadinessStatus is available again after changes in the backend
@@ -639,7 +648,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.38.2...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.38.3...HEAD
+[0.38.3]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.38.3
 [0.38.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.38.2
 [0.38.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.38.1
 [0.38.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.38.0
