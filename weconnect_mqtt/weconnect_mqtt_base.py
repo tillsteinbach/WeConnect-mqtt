@@ -216,6 +216,9 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
             pass
         except FileNotFoundError:
             pass
+    if spin is not None and type(spin) != bool and not re.match(r"^\d{4}$", spin):
+        LOG.error('S-PIN: %s needs to be a four digit number', spin)
+        sys.exit(1)
 
     mqttusername = None
     mqttpassword = None
