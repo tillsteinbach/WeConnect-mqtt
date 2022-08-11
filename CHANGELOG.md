@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
-## [0.39.0] - in testing
+## [0.39.0] - 2022-08-11
 ### Added
 - Support for S-PIN by adding --spin 1234 or in .netrc file: "account 1234"
 - Support for locking/unlocking (selected cars only)
