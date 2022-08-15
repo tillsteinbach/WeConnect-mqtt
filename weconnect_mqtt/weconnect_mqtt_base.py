@@ -95,7 +95,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     weConnectGroup = parser.add_argument_group('WeConnect')
     weConnectGroup.add_argument('-u', '--username', type=str, help='Username of Volkswagen id', required=False)
     weConnectGroup.add_argument('-p', '--password', type=str, help='Password of Volkswagen id', required=False)
-    weConnectGroup.add_argument('-s', '--spin', help='S-PIN of Volkswagen id, required for selected commands', required=False, nargs='?', action='store',
+    weConnectGroup.add_argument('--spin', help='S-PIN of Volkswagen id, required for selected commands', required=False, nargs='?', action='store',
                                 default=None, const=True)
     defaultNetRc = os.path.join(os.path.expanduser("~"), ".netrc")
     weConnectGroup.add_argument('--netrc', help=f'File in netrc syntax providing login (default: {defaultNetRc}).'
