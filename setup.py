@@ -13,7 +13,7 @@ setup(
     name='weconnect-mqtt',
     packages=['weconnect_mqtt'],
     version=open("weconnect_mqtt/__version.py").readlines()[-1].split()[-1].strip("\"'"),
-    description='CMQTT Client that publishes data from Volkswagen WeConnect',
+    description='MQTT Client that publishes data from Volkswagen WeConnect',
     long_description=README,
     long_description_content_type="text/markdown",
     author='Till Steinbach',
