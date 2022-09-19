@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.40.0] - 2022-09-19
+### Fixed
+- fix parsing of empty strings
+
+### Added
+- Preparations for Honk and Flash Endpoint
+- doorLockStatus attribute added
+
+### Changed
+- Show controls only if capability is available
+- Updated API to 0.48.0
+
 ## [0.39.2] - 2022-08-24
 ### Fixed
 - Allow climatization without external power when the real setting from the car was not received
@@ -667,7 +679,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.39.2...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.40.0...HEAD
+[0.40.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.40.0
 [0.39.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.39.2
 [0.39.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.39.1
 [0.39.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.39.0
