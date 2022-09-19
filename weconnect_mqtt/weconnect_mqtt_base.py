@@ -426,11 +426,13 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.weConnect = weConnect
         self.weConnect.enableTracker()
         if self.republishOnUpdate:
-            flags = addressable.AddressableLeaf.ObserverEvent.UPDATED_FROM_SERVER | addressable.AddressableLeaf.ObserverEvent.ENABLED \
-                | addressable.AddressableLeaf.ObserverEvent.DISABLED  # pylint: disable=unsupported-binary-operation
+            flags = (addressable.AddressableLeaf.ObserverEvent.UPDATED_FROM_SERVER  # pylint: disable=unsupported-binary-operation
+                     | addressable.AddressableLeaf.ObserverEvent.ENABLED  # pylint: disable=unsupported-binary-operation
+                     | addressable.AddressableLeaf.ObserverEvent.DISABLED)  # pylint: disable=unsupported-binary-operation
         else:
-            flags = addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED | addressable.AddressableLeaf.ObserverEvent.ENABLED \
-                | addressable.AddressableLeaf.ObserverEvent.DISABLED  # pylint: disable=unsupported-binary-operation
+            flags = (addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED  # pylint: disable=unsupported-binary-operation
+                     | addressable.AddressableLeaf.ObserverEvent.ENABLED  # pylint: disable=unsupported-binary-operation
+                     | addressable.AddressableLeaf.ObserverEvent.DISABLED)  # pylint: disable=unsupported-binary-operation
         self.weConnect.addObserver(self.onWeConnectEvent, flags, priority=addressable.AddressableLeaf.ObserverPriority.USER_MID)
         self.setConnected(connected=True)
         self.setError(code=WeConnectErrors.SUCCESS)
