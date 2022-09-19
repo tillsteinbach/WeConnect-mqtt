@@ -427,10 +427,10 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.weConnect.enableTracker()
         if self.republishOnUpdate:
             flags = addressable.AddressableLeaf.ObserverEvent.UPDATED_FROM_SERVER | addressable.AddressableLeaf.ObserverEvent.ENABLED \
-                | addressable.AddressableLeaf.ObserverEvent.DISABLED
+                | addressable.AddressableLeaf.ObserverEvent.DISABLED  # pylint: disable=unsupported-binary-operation
         else:
             flags = addressable.AddressableLeaf.ObserverEvent.VALUE_CHANGED | addressable.AddressableLeaf.ObserverEvent.ENABLED \
-                | addressable.AddressableLeaf.ObserverEvent.DISABLED
+                | addressable.AddressableLeaf.ObserverEvent.DISABLED  # pylint: disable=unsupported-binary-operation
         self.weConnect.addObserver(self.onWeConnectEvent, flags, priority=addressable.AddressableLeaf.ObserverPriority.USER_MID)
         self.setConnected(connected=True)
         self.setError(code=WeConnectErrors.SUCCESS)
