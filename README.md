@@ -16,7 +16,7 @@
 If you want to integrate data from your weconnect enabled car a standard protocol such as [MQTT](https://mqtt.org) can be very helpful. This Client enables you to integrate with the [MQTT Broker](https://mqtt.org/software/) of your choice (e.g. your home automation solution such as [ioBroker](https://www.iobroker.net), [FHEM](https://fhem.de) or [Home Assistant](https://www.home-assistant.io))
 
 ## Requirements
-You need to install python 3 on your system: [How to install python](https://realpython.com/installing-python/)
+You need to install python 3 on your system: [How to install python](https://realpython.com/installing-python/). The minimum required python version is 3.8
 
 ### Login & Consent
 WeConnect-mqtt is based on the new WeConnect ID API that was introduced with the new series of ID cars. If you use another car or hybrid you probably need to agree to the terms and conditions of the WeConnect ID interface. Easiest to do so is by installing the WeConnect ID app on your smartphone and login there. If necessary you will be asked to agree to the terms and conditions.
