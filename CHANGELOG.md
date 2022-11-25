@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.41.0] - 2022-11-25
+### Changed
+- Updated API to 0.50.0
+- Drop python 3.7 support and add python 3.11 support
+- Docker image now uses python 3.11
+
 ## [0.40.4] - 2022-11-15
 ### Changed
 - Updated API to 0.49.0
