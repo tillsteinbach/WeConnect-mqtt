@@ -710,7 +710,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.40.4...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.41.0...HEAD
+[0.41.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.41.0
 [0.40.4]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.40.4
 [0.40.3]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.40.3
 [0.40.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.40.2
