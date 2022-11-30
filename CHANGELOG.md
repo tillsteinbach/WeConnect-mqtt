@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.41.1] - 2022-11-30
+### Fixed
+- Fixed bug where an attribute was not correctly shown again when it reappears without changed value
+
+### Changed
+- Updated API to 0.50.1
+
 ## [0.41.0] - 2022-11-25
 ### Changed
 - Updated API to 0.50.0
