@@ -443,7 +443,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         LOG.info('Update data from WeConnect')
         self.hasChanges = False
         try:
-            self.weConnect.update(updateCapabilities=self.updateCapabilities, updatePictures=self.updatePictures, selective=self.selective)
+            self.weConnect.update(updateCapabilities=self.updateCapabilities, updatePictures=self.updatePictures, selective=self.selective, force=True)
             self.setConnected(connected=True)
             self.setError(code=WeConnectErrors.SUCCESS)
             topic = f'{self.prefix}/mqtt/weconnectUpdated'
