@@ -437,7 +437,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.setConnected(connected=True)
         self.setError(code=WeConnectErrors.SUCCESS)
 
-    def updateWeConnect(self):  # noqa: C901
+    def updateWeConnect(self, reraise=False):  # noqa: C901
         if self.passive:
             return
         LOG.info('Update data from WeConnect')
@@ -458,26 +458,34 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                          payload=convertedTimeString)
             if topic not in self.topics:
                 self.addTopic(topic)
-        except errors.RetrievalError:
+        except errors.RetrievalError as error:
             self.setConnected(connected=False)
             errorMessage = f'Retrieval error during update. Will try again after configured interval of {self.interval}s'
             self.setError(code=WeConnectErrors.RETRIEVAL_FAILED, message=errorMessage)
             LOG.info(errorMessage)
-        except errors.APICompatibilityError:
+            if reraise:
+                raise error
+        except errors.APICompatibilityError as error:
             self.setConnected(connected=False)
             errorMessage = f'API compatibility error during update. Will try again after configured interval of {self.interval}s'
             self.setError(code=WeConnectErrors.API_COMPATIBILITY, message=errorMessage)
             LOG.info(errorMessage)
-        except errors.TemporaryAuthentificationError:
+            if reraise:
+                raise error
+        except errors.TemporaryAuthentificationError as error:
             self.setConnected(connected=False)
             errorMessage = f'Temporary authentification error during update. Will try again after configured interval of {self.interval}s'
             self.setError(code=WeConnectErrors.AUTHENTIFICATION, message=errorMessage)
             LOG.info(errorMessage)
-        except socket.error:
+            if reraise:
+                raise error
+        except socket.error as error:
             self.setConnected(connected=False)
             errorMessage = f'Socket error during update. Will try again after configured interval of {self.interval}s'
             self.setError(code=WeConnectErrors.RETRIEVAL_FAILED, message=errorMessage)
             LOG.info(errorMessage)
+            if reraise:
+                raise error
         if self.withRawJsonTopic and self.hasChanges:
             topic = f'{self.prefix}/rawjson'
             if topic not in self.topics:
