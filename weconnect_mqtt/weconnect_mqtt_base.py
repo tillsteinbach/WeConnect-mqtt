@@ -73,6 +73,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     brokerGroup.add_argument('-k', '--mqttkeepalive', required=False, type=int, default=60, help='Time between keep-alive messages')
     brokerGroup.add_argument('-mu', '--mqtt-username', type=str, dest='mqttusername', help='Username for MQTT broker', required=False)
     brokerGroup.add_argument('-mp', '--mqtt-password', type=str, dest='mqttpassword', help='Password for MQTT broker', required=False)
+    brokerGroup.add_argument('-mv', '--mqtt-version', type=str, dest='mqttversion', help='MQTT protocol version used', required=False,
+                             choices=['3.1', '3.1.1', '5'], default='3.1.1')
     brokerGroup.add_argument('--transport', required=False, default='tcp', choices=["tcp", 'websockets'], help='EXPERIMENTAL support for websockets transport')
     brokerGroup.add_argument('-s', '--use-tls', action='store_true', help='EXPERIMENTAL')
     brokerGroup.add_argument('--insecure', action='store_true', help='EXPERIMENTAL')
@@ -152,6 +154,14 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
         for handler in logging.root.handlers:
             handler.addFilter(util.DuplicateFilter())
     LOG.info('WeConnect-mqtt %s (using WeConnect-python %s)', __version__, __weconnect_version__)
+
+    if args.mqttversion == '3.1':
+        mqttVersion = paho.mqtt.client.MQTTv31
+    elif args.mqttversion == '5':
+        mqttVersion = paho.mqtt.client.MQTTv5
+    else:
+        mqttVersion = paho.mqtt.client.MQTTv311
+
 
     usetls = args.use_tls
     if args.cacerts:
@@ -261,7 +271,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
         else:
             convertTimezone = tz.gettz(args.convertTimes)
 
-    mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, transport=args.transport, interval=args.interval,
+    mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, protocol=mqttVersion, transport=args.transport, interval=args.interval,
                                      prefix=args.prefix, ignore=args.ignore, updateCapabilities=(not args.noCapabilities),
                                      updatePictures=args.pictures, selective=args.selective, listNewTopics=args.listTopics,
                                      republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat, topicFilterRegex=topicFilterRegex,
@@ -346,10 +356,10 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
 
 
 class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-instance-attributes
-    def __init__(self, clientId=None, transport='tcp', interval=300, prefix='weconnect/0', ignore=0,  # pylint: disable=too-many-arguments
+    def __init__(self, clientId=None, protocol=paho.mqtt.client.MQTTv311, transport='tcp', interval=300, prefix='weconnect/0', ignore=0,  # pylint: disable=too-many-arguments
                  updateCapabilities=True, updatePictures=True, selective=None, listNewTopics=False, republishOnUpdate=False,
                  pictureFormat=None, topicFilterRegex=None, convertTimezone=None, timeFormat=None, withRawJsonTopic=False, passive=False):
-        super().__init__(client_id=clientId, transport=transport)
+        super().__init__(client_id=clientId, transport=transport, protocol=protocol)
         self.weConnect = None
         self.prefix = prefix
         self.interval = interval
