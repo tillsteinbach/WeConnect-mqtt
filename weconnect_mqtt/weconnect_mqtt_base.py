@@ -383,10 +383,16 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.withRawJsonTopic = withRawJsonTopic
         self.passive = passive
 
-        self.on_connect = self.on_connect_callback
-        self.on_message = self.on_message_callback
-        self.on_disconnect = self.on_disconnect_callback
-        self.on_subscribe = self.on_subscribe_callback
+        if protocol == paho.mqtt.client.MQTTv5:
+            self.on_connect = self.on_connect_callback_v5
+            self.on_message = self.on_message_callback
+            self.on_disconnect = self.on_disconnect_callback_v5
+            self.on_subscribe = self.on_subscribe_callback_v5
+        else:
+            self.on_connect = self.on_connect_callback
+            self.on_message = self.on_message_callback
+            self.on_disconnect = self.on_disconnect_callback
+            self.on_subscribe = self.on_subscribe_callback
 
         self.will_set(topic=f'{self.prefix}/mqtt/weconnectConnected', qos=1, retain=True, payload=False)
 
