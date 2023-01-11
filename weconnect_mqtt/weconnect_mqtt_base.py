@@ -162,7 +162,6 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     else:
         mqttVersion = paho.mqtt.client.MQTTv311
 
-
     usetls = args.use_tls
     if args.cacerts:
         usetls = True
@@ -356,8 +355,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
 
 
 class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-instance-attributes
-    def __init__(self, clientId=None, protocol=paho.mqtt.client.MQTTv311, transport='tcp', interval=300, prefix='weconnect/0', ignore=0,  # pylint: disable=too-many-arguments
-                 updateCapabilities=True, updatePictures=True, selective=None, listNewTopics=False, republishOnUpdate=False,
+    def __init__(self, clientId=None, protocol=paho.mqtt.client.MQTTv311, transport='tcp', interval=300,  # pylint: disable=too-many-arguments
+                 prefix='weconnect/0', ignore=0, updateCapabilities=True, updatePictures=True, selective=None, listNewTopics=False, republishOnUpdate=False,
                  pictureFormat=None, topicFilterRegex=None, convertTimezone=None, timeFormat=None, withRawJsonTopic=False, passive=False):
         super().__init__(client_id=clientId, transport=transport, protocol=protocol)
         self.weConnect = None
