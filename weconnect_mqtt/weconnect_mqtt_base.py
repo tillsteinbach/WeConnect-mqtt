@@ -616,6 +616,34 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             print('Could not connect: %d', rc, file=sys.stderr)
             sys.exit(1)
 
+    def on_connect_callback_v5(self, mqttc, obj, flags, reasonCode, properties):
+        del mqttc  # unused
+        del obj  # unused
+        del flags  # unused
+        del properties
+
+        if reasonCode == 0:
+            LOG.info('Connected to MQTT broker')
+            if not self.passive:
+                topic = f'{self.prefix}/mqtt/weconnectForceUpdate_writetopic'
+                self.subscribe(topic, qos=2)
+                if topic not in self.topics:
+                    self.addTopic(topic, writeable=True)
+
+                topic = f'{self.prefix}/mqtt/weconnectUpdateInterval_s'
+                self.publish(topic=topic, qos=1, retain=True,
+                             payload=self.interval)
+                self.subscribe(topic + '_writetopic', qos=1)
+                if topic not in self.topics:
+                    self.addTopic(topic + '_writetopic', writeable=True)
+
+            self.setConnected()
+
+            self.updateWeConnect()
+        else:
+            print('Could not connect: %d', reasonCode, file=sys.stderr)
+            sys.exit(1)
+
     def on_disconnect_callback(self, client, userdata, rc):
         del client
         del userdata
@@ -637,11 +665,42 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                 finally:
                     time.sleep(10)
 
+    def on_disconnect_callback_v5(self, client, userdata, reasonCode, properties):
+        del client
+        del userdata
+        del properties
+
+        if reasonCode == 0:
+            LOG.info('Client successfully disconnected')
+        else:
+            LOG.info('Client unexpectedly disconnected (%d), trying to reconnect', reasonCode)
+            while True:
+                try:
+                    self.reconnect()
+                    break
+                except ConnectionRefusedError as e:
+                    LOG.error('Could not reconnect to MQTT-Server: %s, will retry in 10 seconds', e)
+                except socket.timeout:
+                    LOG.error('Could not reconnect to MQTT-Server due to timeout, will retry in 10 seconds')
+                except OSError as e:
+                    LOG.error('Could not reconnect to MQTT-Server: %s, will retry in 10 seconds', e)
+                finally:
+                    time.sleep(10)
+
     def on_subscribe_callback(self, mqttc, obj, mid, granted_qos):
         del mqttc  # unused
         del obj  # unused
         del mid  # unused
         del granted_qos  # unused
+        self.lastSubscribe = datetime.now()
+        LOG.debug('sucessfully subscribed to topic')
+
+    def on_subscribe_callback_v5(self, mqttc, obj, mid, reasonCodes, properties):
+        del mqttc  # unused
+        del obj  # unused
+        del mid  # unused
+        del reasonCodes  # unused
+        del properties  # unused
         self.lastSubscribe = datetime.now()
         LOG.debug('sucessfully subscribed to topic')
 
