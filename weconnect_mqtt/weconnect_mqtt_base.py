@@ -622,7 +622,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             print('Could not connect: %d', rc, file=sys.stderr)
             sys.exit(1)
 
-    def on_connect_callback_v5(self, mqttc, obj, flags, reasonCode, properties):
+    def on_connect_callback_v5(self, mqttc, obj, flags, reasonCode, properties):  # noqa: C901
         del mqttc  # unused
         del obj  # unused
         del flags  # unused
@@ -713,7 +713,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                 finally:
                     time.sleep(10)
 
-    def on_disconnect_callback_v5(self, client, userdata, reasonCode, properties):
+    def on_disconnect_callback_v5(self, client, userdata, reasonCode, properties):  # noqa: C901
         del client
         del properties
 
@@ -773,7 +773,6 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         del granted_qos  # unused
         self.lastSubscribe = datetime.now()
         LOG.debug('sucessfully subscribed to topic')
-
 
     def on_subscribe_callback_v5(self, mqttc, obj, mid, reasonCodes, properties):
         del mqttc  # unused
