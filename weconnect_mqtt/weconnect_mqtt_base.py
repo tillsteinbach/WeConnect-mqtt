@@ -482,7 +482,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                 raise error
         except errors.APICompatibilityError as error:
             self.setConnected(connected=False)
-            errorMessage = f'API compatibility error during update. Will try again after configured interval of {self.interval}s'
+            errorMessage = f'API compatibility error ({str(error)}) during update. Will try again after configured interval of {self.interval}s'
             self.setError(code=WeConnectErrors.API_COMPATIBILITY, message=errorMessage)
             LOG.info(errorMessage)
             if reraise:
