@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 - Add new timer attribute targetSOC_pct
 
 ### Fixed
-- Fixed bug where an attribute was not correctly shown again when it reappears without changed value
+- Bug that could make attributes disappear on certain values
 
 ### Changed
 - Updated API to 0.52.0
