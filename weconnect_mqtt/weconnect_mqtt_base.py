@@ -357,7 +357,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
 class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-instance-attributes
     def __init__(self, clientId=None, protocol=paho.mqtt.client.MQTTv311, transport='tcp', interval=300,  # pylint: disable=too-many-arguments
                  prefix='weconnect/0', ignore=0, updateCapabilities=True, updatePictures=True, selective=None, listNewTopics=False, republishOnUpdate=False,
-                 pictureFormat=None, topicFilterRegex=None, convertTimezone=None, timeFormat=None, withRawJsonTopic=False, passive=False):
+                 pictureFormat=None, topicFilterRegex=None, convertTimezone=None, timeFormat=None, withRawJsonTopic=False, passive=False,
+                 updateOnConnect=True):
         super().__init__(client_id=clientId, transport=transport, protocol=protocol)
         self.weConnect = None
         self.prefix = prefix
@@ -382,6 +383,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.hasChanges = False
         self.withRawJsonTopic = withRawJsonTopic
         self.passive = passive
+        self.updateOnConnect = updateOnConnect
 
         if protocol == paho.mqtt.client.MQTTv5:
             self.on_connect = self.on_connect_callback_v5
@@ -583,7 +585,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         else:
             self.hasError = False
 
-    def on_connect_callback(self, mqttc, obj, flags, rc):
+    def on_connect_callback(self, mqttc, obj, flags, rc):  # noqa: C901
         del mqttc  # unused
         del obj  # unused
         del flags  # unused
@@ -605,7 +607,8 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
 
             self.setConnected()
 
-            self.updateWeConnect()
+            if self.updateOnConnect:
+                self.updateWeConnect()
         elif rc == 1:
             LOG.error('Could not connect (%d): incorrect protocol version', rc)
         elif rc == 2:
@@ -645,7 +648,8 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
 
             self.setConnected()
 
-            self.updateWeConnect()
+            if self.updateOnConnect:
+                self.updateWeConnect()
         elif reasonCode == 128:
             LOG.error('Could not connect (%d): Unspecified error', reasonCode)
         elif reasonCode == 129:
