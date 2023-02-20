@@ -17,7 +17,6 @@ from dateutil import tz
 
 import paho.mqtt.client
 from PIL import Image
-import ascii_magic
 
 from requests import exceptions
 
@@ -552,12 +551,12 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             return str(convertedTime)
         if isinstance(value, Image.Image):
             if self.pictureFormat == PictureFormat.TXT or self.pictureFormat is None:
-                return util.imgToASCIIArt(value, columns=120, mode=ascii_magic.Modes.ASCII)
+                return util.imgToASCIIArt(value, columns=120, mode=util.Modes.ASCII)
             if self.pictureFormat == PictureFormat.PNG:
                 img_io = BytesIO()
                 value.save(img_io, 'PNG')
                 return img_io.getvalue()
-            return util.imgToASCIIArt(value, columns=120, mode=ascii_magic.Modes.ASCII)
+            return util.imgToASCIIArt(value, columns=120, mode=util.Modes.ASCII)
         return str(value)
 
     def setConnected(self, connected=True):
