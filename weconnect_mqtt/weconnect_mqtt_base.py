@@ -551,12 +551,12 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             return str(convertedTime)
         if isinstance(value, Image.Image):
             if self.pictureFormat == PictureFormat.TXT or self.pictureFormat is None:
-                return util.imgToASCIIArt(value, columns=120, mode=util.Modes.ASCII)
+                return util.imgToASCIIArt(value, columns=120, mode=util.ASCIIModes.ASCII)
             if self.pictureFormat == PictureFormat.PNG:
                 img_io = BytesIO()
                 value.save(img_io, 'PNG')
                 return img_io.getvalue()
-            return util.imgToASCIIArt(value, columns=120, mode=util.Modes.ASCII)
+            return util.imgToASCIIArt(value, columns=120, mode=util.ASCIIModes.ASCII)
         return str(value)
 
     def setConnected(self, connected=True):
