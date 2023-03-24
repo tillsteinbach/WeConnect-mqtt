@@ -32,7 +32,7 @@ If you want to update WeConnect-mqtt, the easiest way is:
 pip3 install weconnect-mqtt --upgrade
 ```
 ### Docker
-There is also a Docker image to easily host WeConnect-MQTT: [See on Dockerhub](https://hub.docker.com/repository/docker/tillsteinbach/weconnect-mqtt)
+There is also a Docker image to easily host WeConnect-MQTT: [See on Dockerhub](https://hub.docker.com/r/tillsteinbach/weconnect-mqtt)
 
 ## How to use
 Start weconnect-mqtt from the commandline:
