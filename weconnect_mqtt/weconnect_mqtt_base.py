@@ -604,6 +604,10 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                 if topic not in self.topics:
                     self.addTopic(topic + '_writetopic', writeable=True)
 
+            # Subscribe again to all writeable topics after a reconnect
+            for writeableTopic in self.writeableTopics:
+                self.subscribe(writeableTopic, qos=1)
+
             self.setConnected()
 
             if self.updateOnConnect:
@@ -644,6 +648,10 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                 self.subscribe(topic + '_writetopic', qos=1)
                 if topic not in self.topics:
                     self.addTopic(topic + '_writetopic', writeable=True)
+
+            # Subscribe again to all writeable topics after a reconnect
+            for writeableTopic in self.writeableTopics:
+                self.subscribe(writeableTopic, qos=1)
 
             self.setConnected()
 
