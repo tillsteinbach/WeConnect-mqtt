@@ -70,6 +70,15 @@ password testpassword123
 ```
 You can also provide the location of the netrc file using the --netrc option
 
+The optional S-PIN needed for some commands can be provided in the account section:
+```
+# For WeConnect
+machine volkswagen.de
+login test@test.de
+password testpassword123
+account 1234
+```
+
 ### Charging stations
 You can also obtain data from charging stations by adding a location with e.g. `--chargingLocation 52.437132 10.796628` and a radius in meters with `--chargingLocationRadius=500`.
 Data for charging stations is mostly static, but you can see the current availability.
