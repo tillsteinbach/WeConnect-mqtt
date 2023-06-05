@@ -35,6 +35,13 @@ services:
       - ADDITIONAL_PARAMETERS=--mqtt-username test --mqtt-password test
 ```
 
+
+### S-PIN
+For some commands (e.g. locking/unlocking supported on some cars) you need in addition to your login the so called S-PIN, you can provide it with the `--spin` option:
+```bash
+ADDITIONAL_PARAMETERS=--mqtt-username test --mqtt-password test  --spin 1234
+```
+
 ### Times
 By default the times coming from the car are UTC isoformat. You can convert times to your local timezone by adding `--convert-times`. Convert times will use the timezone specified in `TZ` variable.
 You can format times in your local format by adding `--timeformat` to `ADDITIONAL_PARAMETERS`. This will use the default Date/Time format of your locale setting (`LC_ALL` variable). If you want to set a specific format add e.g. `--timeformat '%a %d %b %Y %T'` to `ADDITIONAL_PARAMETERS`.
