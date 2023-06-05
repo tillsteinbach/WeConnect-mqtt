@@ -49,6 +49,12 @@ weconnect-mqtt --username test@test.de --password test123 --mqttbroker 192.168.0
 ```
 The client uses user test@test.de and password test123 in this example to connect to weconnect
 
+### S-PIN
+For some commands (e.g. locking/unlocking supported on some cars) you need in addition to your login the so called S-PIN, you can provide it with the `--spin` option:
+```bash
+weconnect-mqtt --username test@test.de --password test123  --spin 1234 --mqttbroker 192.168.0.1 --mqtt-username test --mqtt-password test123 --prefix weconnect
+```
+
 ### Credentials
 If you do not want to provide your username or password all the time you have to create a ".netrc" file at the appropriate location (usually this is your home folder):
 ```
