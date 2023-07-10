@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.44.0] - 2023-07-10 
+### Added
+- BETA: functionality to read status for active ventilation and auxiliary heating (non electric cars)
+- BETA: functionality to control active ventilation and auxiliary heating (non electric cars)
+- Added heaterSource attribute in climatization settings
+- Possibility to read trip statistics (if supported by the car)
+
+### Changed
+- Updated API to 0.56.0
+
 ## [0.43.1] - 2023-06-20 
 ### Changed
 - Updated API to 0.55.1
@@ -773,7 +783,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.43.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.44.0...HEAD
+[0.44.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.44.0
 [0.43.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.43.1
 [0.43.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.43.0
 [0.42.4]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.42.4
