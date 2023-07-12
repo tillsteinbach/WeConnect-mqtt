@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.44.2] - 2023-07-12
+### Fixed
+- Another small bugfix for fetching trips
+
 ## [0.44.1] - 2023-07-12
 ### Fixed
 - Don't throw error when fetching trips and car is not supporting certain categories
@@ -787,7 +791,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.44.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.44.2...HEAD
+[0.44.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.44.2
 [0.44.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.44.1
 [0.44.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.44.0
 [0.43.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.43.1
