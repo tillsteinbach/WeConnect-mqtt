@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.45.0] - 2023-07-20
+### Added
+- honking and flashing on cars supporting honkAndFlash capability
+
+### Changed
+- Updated API to 0.57.0
+
 ## [0.44.2] - 2023-07-12
 ### Fixed
 - Another small bugfix for fetching trips
