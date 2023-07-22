@@ -308,7 +308,7 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
                 weConnect = weconnect.WeConnect(username=username, password=password, spin=spin, updateAfterLogin=False,
                                                 updateCapabilities=mqttCLient.updateCapabilities, updatePictures=mqttCLient.updatePictures,
                                                 maxAgePictures=args.pictureCache, selective=mqttCLient.selective,
-                                                forceReloginAfter=21600)
+                                                forceReloginAfter=21600, timeout=180)
                 mqttCLient.connectWeConnect(weConnect)
                 break
             except exceptions.ConnectionError as e:
