@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.45.1] - 2023-07-22
+### Fixed
+- Fixed Weconnect-MQTT being stuck due to hanging http connection
+
 ## [0.45.0] - 2023-07-20
 ### Added
 - honking and flashing on cars supporting honkAndFlash capability
@@ -798,7 +802,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.45.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.45.1...HEAD
+[0.45.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.45.1
 [0.45.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.45.0
 [0.44.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.44.2
 [0.44.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.44.1
