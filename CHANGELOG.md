@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.46.0] - 2023-09-03
+### Added
+- carType FUEL added
+- BatteryPowerLevel EMERGENCY added
+- trip averageAuxConsumption and averageRecuperation added for selected cars
+- updating of trips fixed (thanks to user gilder0 for contributing)
+
+### Changed
+- Updated API to 0.58.0
+
 ## [0.45.1] - 2023-07-22
 ### Fixed
 - Fixed Weconnect-MQTT being stuck due to hanging http connection
@@ -802,7 +812,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.45.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.46.0...HEAD
+[0.46.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.46.0
 [0.45.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.45.1
 [0.45.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.45.0
 [0.44.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.44.2
