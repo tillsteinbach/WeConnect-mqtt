@@ -9,7 +9,7 @@ jobs:
   python-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -66,10 +66,10 @@ jobs:
           while [ $? -ne 0 ]; do sleep 10; pip3 download weconnect-mqtt==${{ env.version }}; done
         shell: bash {0}
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v4.6.0
+        uses: docker/metadata-action@v5.0.0
         with:
           images: |
             tillsteinbach/weconnect-mqtt
@@ -82,19 +82,19 @@ jobs:
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v2.10.0
       - name: Login to DockerHub
-        uses: docker/login-action@v2.2.0
+        uses: docker/login-action@v3.0.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2.2.0
+        uses: docker/login-action@v3.0.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         id: docker_build
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5.0.0
         with:
           context: docker
           push: ${{ github.event_name != 'pull_request' }}
