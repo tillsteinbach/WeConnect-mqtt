@@ -1,7 +1,7 @@
-FROM python:3.11.0-alpine as base
+FROM python:3.12.0-alpine as base
 RUN apk add --update tzdata
 
-FROM python:3.11.0-alpine
+FROM python:3.12.0-alpine
 ARG VERSION
 ENV USER=
 ENV PASSWORD=
