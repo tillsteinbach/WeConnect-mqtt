@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.48.0] - 2023-10-27
+### Fixed
+- Fixes a bug in the API that causes incorrect range values for cars using miles instead of km (thanks to user @bendavidson for the contribution)
+
+### Added
+- Added attributes for Hv battery temperature
+
+### Changed
+- Updated API to 0.59.2
+
 ## [0.47.0] - 2023-10-16
 ### Added
 - Added several new statuses and attributes
@@ -819,8 +829,9 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.47.0...HEAD
-[0.46.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.47.0
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.48.0...HEAD
+[0.48.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.48.0
+[0.47.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.47.0
 [0.46.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.46.0
 [0.45.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.45.1
 [0.45.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.45.0
