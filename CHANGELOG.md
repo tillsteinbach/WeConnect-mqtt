@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.48.1] - 2023-10-27
+### Fixed
+- Fixes a bug introduced by the range correction
+
+### Changed
+- Updated API to 0.59.3
+
 ## [0.48.0] - 2023-10-27
 ### Fixed
 - Fixes a bug in the API that causes incorrect range values for cars using miles instead of km (thanks to user @bendavidson for the contribution)
