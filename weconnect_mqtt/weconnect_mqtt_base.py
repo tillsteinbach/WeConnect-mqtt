@@ -362,6 +362,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.weConnect = None
         self.prefix = prefix
         self.interval = interval
+        self.temporaryInterval = None
         self.connected = False
         self.hasError = None
         self.ignore = ignore
@@ -474,6 +475,14 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                          payload=convertedTimeString)
             if topic not in self.topics:
                 self.addTopic(topic)
+        except errors.TooManyRequestsError as error:
+            self.temporaryInterval = 900
+            self.setConnected(connected=False)
+            errorMessage = 'Retrieval error during update. Too many requests from your account. Will try again after 15 minutes'
+            self.setError(code=WeConnectErrors.RETRIEVAL_FAILED, message=errorMessage)
+            LOG.info(errorMessage)
+            if reraise:
+                raise error
         except errors.RetrievalError as error:
             self.setConnected(connected=False)
             errorMessage = f'Retrieval error during update. Will try again after configured interval of {self.interval}s'
@@ -874,7 +883,11 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.loop_start()
         try:
             while True:
-                time.sleep(self.interval)
+                if self.temporaryInterval:
+                    time.sleep(self.temporaryInterval)
+                    self.temporaryInterval = None
+                else:
+                    time.sleep(self.interval)
                 self.updateWeConnect()
         except KeyboardInterrupt:
             self.loop_stop(force=False)
