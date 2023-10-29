@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.48.2] - 2023-10-29
+### Fixed
+- Better handling of update on connect
+
+### Added
+- Slowing down update after 429 error
+
+### Changed
+- Updated API to 0.59.4
+
 ## [0.48.1] - 2023-10-27
 ### Fixed
 - Fixes a bug introduced by the range correction
@@ -836,7 +846,9 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.48.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.48.2...HEAD
+[0.48.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.48.2
+[0.48.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.48.1
 [0.48.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.48.0
 [0.47.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.47.0
 [0.46.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.46.0
