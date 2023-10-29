@@ -86,6 +86,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
     brokerGroup.add_argument('--ignore-for', dest='ignore', help='Ignore messages for first IGNORE seconds after subscribe to aviod '
                              'retained messages from the broker to make changes to the car (default is 5s) if you don\'t want this behavious set to 0',
                              type=int, required=False, default=5)
+    parser.add_argument('--update-on-connect', dest='updateOnConnect', action='store_true',
+                        help='Do the first update when the broker is connected.')
     parser.add_argument('--republish-on-update', dest='republishOnUpdate', action='store_true',
                         help='Republish all topics on every update, not just when the value changes.')
     parser.add_argument('--list-topics', dest='listTopics', help='List new topics when created the first time', action='store_true')
@@ -273,7 +275,8 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
                                      prefix=args.prefix, ignore=args.ignore, updateCapabilities=(not args.noCapabilities),
                                      updatePictures=args.pictures, selective=args.selective, listNewTopics=args.listTopics,
                                      republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat, topicFilterRegex=topicFilterRegex,
-                                     convertTimezone=convertTimezone, timeFormat=args.timeFormat, withRawJsonTopic=args.withRawJsonTopic)
+                                     convertTimezone=convertTimezone, timeFormat=args.timeFormat, withRawJsonTopic=args.withRawJsonTopic,
+                                     updateOnConnect=args.updateOnConnect)
     mqttCLient.enable_logger()
 
     if usetls:
