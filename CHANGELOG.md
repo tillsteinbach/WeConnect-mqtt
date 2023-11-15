@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.48.3] - 2023-11-15
+### Fixed
+- Fixes a bug in active ventialtion and auxiliary heating controls
+
+### Changed
+- Changed behaviour on 429 errors (no immediate retry anymore)
+- Updated API to 0.59.5
+
 ## [0.48.2] - 2023-10-29
 ### Fixed
 - Better handling of update on connect
@@ -846,7 +854,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.48.2...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.48.3...HEAD
+[0.48.3]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.48.3
 [0.48.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.48.2
 [0.48.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.48.1
 [0.48.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.48.0
