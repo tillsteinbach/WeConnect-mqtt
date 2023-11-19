@@ -719,7 +719,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             print('Could not connect: %d', reasonCode, file=sys.stderr)
             sys.exit(1)
 
-    def on_disconnect_callback(self, client, userdata, rc):
+    def on_disconnect_callback(self, client, userdata, rc):  # pylint: disable=no-self-use
         del client
         del userdata
 
@@ -728,7 +728,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         else:
             LOG.info('Client unexpectedly disconnected (%d), trying to reconnect', rc)
 
-    def on_disconnect_callback_v5(self, client, userdata, reasonCode, properties):  # noqa: C901  # pylint: disable=too-many-branches
+    def on_disconnect_callback_v5(self, client, userdata, reasonCode, properties):  # noqa: C901  # pylint: disable=too-many-branches,no-self-use
         del client
         del properties
 
