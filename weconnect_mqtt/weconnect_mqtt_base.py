@@ -341,7 +341,6 @@ def main():  # noqa: C901  # pylint: disable=too-many-branches,too-many-statemen
 
         # blocking run
         mqttCLient.run()
-        mqttCLient.disconnect()
         mqttCLient.weConnect.persistTokens()
     except KeyboardInterrupt:
         pass
@@ -635,9 +634,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         elif rc == 2:
             LOG.error('Could not connect (%d): invalid client identifier', rc)
         elif rc == 3:
-            LOG.error('Could not connect (%d): server unavailable. Retrying in 10 seconds', rc)
-            time.sleep(10)
-            self.reconnect()
+            LOG.error('Could not connect (%d): server unavailable. Retrying', rc)
         elif rc == 4:
             LOG.error('Could not connect (%d): bad username or password', rc)
         elif rc == 5:
@@ -697,9 +694,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         elif reasonCode == 136:
             LOG.error('Could not connect (%d): Server unavailable', reasonCode)
         elif reasonCode == 137:
-            LOG.error('Could not connect (%d): Server busy. Retrying in 10 seconds', reasonCode)
-            time.sleep(10)
-            self.reconnect()
+            LOG.error('Could not connect (%d): Server busy. Retrying', reasonCode)
         elif reasonCode == 138:
             LOG.error('Could not connect (%d): Banned', reasonCode)
         elif reasonCode == 140:
@@ -732,18 +727,6 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             LOG.info('Client successfully disconnected')
         else:
             LOG.info('Client unexpectedly disconnected (%d), trying to reconnect', rc)
-            while True:
-                try:
-                    self.reconnect()
-                    break
-                except ConnectionRefusedError as e:
-                    LOG.error('Could not reconnect to MQTT-Server: %s, will retry in 10 seconds', e)
-                except socket.timeout:
-                    LOG.error('Could not reconnect to MQTT-Server due to timeout, will retry in 10 seconds')
-                except OSError as e:
-                    LOG.error('Could not reconnect to MQTT-Server: %s, will retry in 10 seconds', e)
-                finally:
-                    time.sleep(10)
 
     def on_disconnect_callback_v5(self, client, userdata, reasonCode, properties):  # noqa: C901  # pylint: disable=too-many-branches
         del client
@@ -755,48 +738,12 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             LOG.info('Client successfully disconnected: %s', userdata)
         elif reasonCode == 137:
             LOG.error('Client disconnected: Server busy')
-            while True:
-                try:
-                    self.reconnect()
-                    break
-                except ConnectionRefusedError as e:
-                    LOG.error('Could not reconnect to MQTT-Server: %s, will retry in 10 seconds', e)
-                except socket.timeout:
-                    LOG.error('Could not reconnect to MQTT-Server due to timeout, will retry in 10 seconds')
-                except OSError as e:
-                    LOG.error('Could not reconnect to MQTT-Server: %s, will retry in 10 seconds', e)
-                finally:
-                    time.sleep(10)
         elif reasonCode == 139:
             LOG.error('Client disconnected: Server shutting down')
-            while True:
-                try:
-                    self.reconnect()
-                    break
-                except ConnectionRefusedError as e:
-                    LOG.error('Could not reconnect to MQTT-Server: %s, will retry in 10 seconds', e)
-                except socket.timeout:
-                    LOG.error('Could not reconnect to MQTT-Server due to timeout, will retry in 10 seconds')
-                except OSError as e:
-                    LOG.error('Could not reconnect to MQTT-Server: %s, will retry in 10 seconds', e)
-                finally:
-                    time.sleep(10)
         elif reasonCode == 160:
             LOG.error('Client disconnected: Maximum connect time')
         else:
             LOG.error('Client unexpectedly disconnected (%d), trying to reconnect', reasonCode)
-            while True:
-                try:
-                    self.reconnect()
-                    break
-                except ConnectionRefusedError as e:
-                    LOG.error('Could not reconnect to MQTT-Server: %s, will retry in 10 seconds', e)
-                except socket.timeout:
-                    LOG.error('Could not reconnect to MQTT-Server due to timeout, will retry in 10 seconds')
-                except OSError as e:
-                    LOG.error('Could not reconnect to MQTT-Server: %s, will retry in 10 seconds', e)
-                finally:
-                    time.sleep(10)
 
     def on_subscribe_callback(self, mqttc, obj, mid, granted_qos):
         del mqttc  # unused
