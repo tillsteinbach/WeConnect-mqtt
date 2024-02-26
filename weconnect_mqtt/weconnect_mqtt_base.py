@@ -361,7 +361,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                  prefix='weconnect/0', ignore=0, updateCapabilities=True, updatePictures=True, selective=None, listNewTopics=False, republishOnUpdate=False,
                  pictureFormat=None, topicFilterRegex=None, convertTimezone=None, timeFormat=None, withRawJsonTopic=False, passive=False,
                  updateOnConnect=True):
-        super().__init__(client_id=clientId, transport=transport, protocol=protocol)
+        super().__init__(callback_api_version=paho.mqtt.client.CallbackAPIVersion.VERSION2, client_id=clientId, transport=transport, protocol=protocol)
         self.lock = Lock()
         self.weConnect = None
         self.prefix = prefix
@@ -389,16 +389,10 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         self.passive = passive
         self.updateOnConnect = updateOnConnect
 
-        if protocol == paho.mqtt.client.MQTTv5:
-            self.on_connect = self.on_connect_callback_v5
-            self.on_message = self.on_message_callback
-            self.on_disconnect = self.on_disconnect_callback_v5
-            self.on_subscribe = self.on_subscribe_callback_v5
-        else:
-            self.on_connect = self.on_connect_callback
-            self.on_message = self.on_message_callback
-            self.on_disconnect = self.on_disconnect_callback
-            self.on_subscribe = self.on_subscribe_callback
+        self.on_connect = self.on_connect_callback
+        self.on_message = self.on_message_callback
+        self.on_disconnect = self.on_disconnect_callback
+        self.on_subscribe = self.on_subscribe_callback
 
         self.will_set(topic=f'{self.prefix}/mqtt/weconnectConnected', qos=1, retain=True, payload=False)
 
@@ -598,57 +592,11 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         else:
             self.hasError = False
 
-    def on_connect_callback(self, mqttc, obj, flags, rc):  # noqa: C901
-        del mqttc  # unused
-        del obj  # unused
-        del flags  # unused
-
-        if rc == 0:
-            LOG.info('Connected to MQTT broker')
-            if not self.passive:
-                topic = f'{self.prefix}/mqtt/weconnectForceUpdate_writetopic'
-                self.subscribe(topic, qos=2)
-                if topic not in self.topics:
-                    self.addTopic(topic, writeable=True)
-
-                topic = f'{self.prefix}/mqtt/weconnectUpdateInterval_s'
-                self.publish(topic=topic, qos=1, retain=True,
-                             payload=self.interval)
-                self.subscribe(topic + '_writetopic', qos=1)
-                if topic not in self.topics:
-                    self.addTopic(topic + '_writetopic', writeable=True)
-
-            # Subscribe again to all writeable topics after a reconnect
-            for writeableTopic in self.writeableTopics:
-                self.subscribe(writeableTopic, qos=1)
-
-            self.setConnected()
-
-            if self.updateOnConnect:
-                backgroundThread = Thread(target=self.updateWeConnect, daemon=True, name='Update in Background')
-                backgroundThread.start()
-            else:
-                LOG.info('waiting for first update from server')
-        elif rc == 1:
-            LOG.error('Could not connect (%d): incorrect protocol version', rc)
-        elif rc == 2:
-            LOG.error('Could not connect (%d): invalid client identifier', rc)
-        elif rc == 3:
-            LOG.error('Could not connect (%d): server unavailable. Retrying', rc)
-        elif rc == 4:
-            LOG.error('Could not connect (%d): bad username or password', rc)
-        elif rc == 5:
-            LOG.error('Could not connect (%d): not authorised', rc)
-        else:
-            print('Could not connect: %d', rc, file=sys.stderr)
-            sys.exit(1)
-
-    def on_connect_callback_v5(self, mqttc, obj, flags, reasonCode, properties):  # noqa: C901  # pylint: disable=too-many-branches
+    def on_connect_callback(self, mqttc, obj, flags, reasonCode, properties):  # noqa: C901  # pylint: disable=too-many-branches
         del mqttc  # unused
         del obj  # unused
         del flags  # unused
         del properties
-
         if reasonCode == 0:
             LOG.info('Connected to MQTT broker')
             if not self.passive:
@@ -719,16 +667,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             print('Could not connect: %d', reasonCode, file=sys.stderr)
             sys.exit(1)
 
-    def on_disconnect_callback(self, client, userdata, rc):  # pylint: disable=no-self-use
-        del client
-        del userdata
-
-        if rc == 0:
-            LOG.info('Client successfully disconnected')
-        else:
-            LOG.info('Client unexpectedly disconnected (%d), trying to reconnect', rc)
-
-    def on_disconnect_callback_v5(self, client, userdata, reasonCode, properties):  # noqa: C901  # pylint: disable=too-many-branches,no-self-use
+    def on_disconnect_callback(self, client, userdata, reasonCode, properties):  # noqa: C901  # pylint: disable=too-many-branches,no-self-use
         del client
         del properties
 
@@ -745,15 +684,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         else:
             LOG.error('Client unexpectedly disconnected (%d), trying to reconnect', reasonCode)
 
-    def on_subscribe_callback(self, mqttc, obj, mid, granted_qos):
-        del mqttc  # unused
-        del obj  # unused
-        del mid  # unused
-        del granted_qos  # unused
-        self.lastSubscribe = datetime.now()
-        LOG.debug('sucessfully subscribed to topic')
-
-    def on_subscribe_callback_v5(self, mqttc, obj, mid, reasonCodes, properties):
+    def on_subscribe_callback(self, mqttc, obj, mid, reasonCodes, properties):
         del mqttc  # unused
         del obj  # unused
         del mid  # unused
