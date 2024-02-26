@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.49.0] - in testing
+### Changed
+- Updated to paho-mqtt 2.0.0
+
 ## [0.48.4] - 2024-02-26
 ### Added
 - Adds several new attributes and status
@@ -861,7 +865,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.48.4...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.49.0...HEAD
+[0.49.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.49.0
 [0.48.4]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.48.4
 [0.48.3]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.48.3
 [0.48.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.48.2
