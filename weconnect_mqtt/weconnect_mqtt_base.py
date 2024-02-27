@@ -780,7 +780,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
                     time.sleep(self.interval)
                 self.updateWeConnect()
         except KeyboardInterrupt:
-            self.loop_stop(force=False)
+            self.loop_stop()
             self.weConnect.disconnect()
 
 
