@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 - No unreleased changes so far
 
 ## [0.49.0] - in testing
+### Added
+- Adds new departure timer attributes
+
 ### Changed
 - Updated to paho-mqtt 2.0.0
 
