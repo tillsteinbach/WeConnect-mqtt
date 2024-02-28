@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Updated to paho-mqtt 2.0.0
+- Updated API to 0.60.2
 
 ## [0.48.4] - 2024-02-26
 ### Added
