@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
-## [0.49.0] - in testing
+## [0.49.0] - 2024-03-03
 ### Added
 - Adds new departure timer attributes
 
