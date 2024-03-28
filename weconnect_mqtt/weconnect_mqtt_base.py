@@ -624,47 +624,47 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             else:
                 LOG.info('waiting for first update from server')
         elif reasonCode == 128:
-            LOG.error('Could not connect (%d): Unspecified error', reasonCode)
+            LOG.error('Could not connect (%s): Unspecified error', reasonCode)
         elif reasonCode == 129:
-            LOG.error('Could not connect (%d): Malformed packet', reasonCode)
+            LOG.error('Could not connect (%s): Malformed packet', reasonCode)
         elif reasonCode == 130:
-            LOG.error('Could not connect (%d): Protocol error', reasonCode)
+            LOG.error('Could not connect (%s): Protocol error', reasonCode)
         elif reasonCode == 131:
-            LOG.error('Could not connect (%d): Implementation specific error', reasonCode)
+            LOG.error('Could not connect (%s): Implementation specific error', reasonCode)
         elif reasonCode == 132:
-            LOG.error('Could not connect (%d): Unsupported protocol version', reasonCode)
+            LOG.error('Could not connect (%s): Unsupported protocol version', reasonCode)
         elif reasonCode == 133:
-            LOG.error('Could not connect (%d): Client identifier not valid', reasonCode)
+            LOG.error('Could not connect (%s): Client identifier not valid', reasonCode)
         elif reasonCode == 134:
-            LOG.error('Could not connect (%d): Bad user name or password', reasonCode)
+            LOG.error('Could not connect (%s): Bad user name or password', reasonCode)
         elif reasonCode == 135:
-            LOG.error('Could not connect (%d): Not authorized', reasonCode)
+            LOG.error('Could not connect (%s): Not authorized', reasonCode)
         elif reasonCode == 136:
-            LOG.error('Could not connect (%d): Server unavailable', reasonCode)
+            LOG.error('Could not connect (%s): Server unavailable', reasonCode)
         elif reasonCode == 137:
-            LOG.error('Could not connect (%d): Server busy. Retrying', reasonCode)
+            LOG.error('Could not connect (%s): Server busy. Retrying', reasonCode)
         elif reasonCode == 138:
-            LOG.error('Could not connect (%d): Banned', reasonCode)
+            LOG.error('Could not connect (%s): Banned', reasonCode)
         elif reasonCode == 140:
-            LOG.error('Could not connect (%d): Bad authentication method', reasonCode)
+            LOG.error('Could not connect (%s): Bad authentication method', reasonCode)
         elif reasonCode == 144:
-            LOG.error('Could not connect (%d): Topic name invalid', reasonCode)
+            LOG.error('Could not connect (%s): Topic name invalid', reasonCode)
         elif reasonCode == 149:
-            LOG.error('Could not connect (%d): Packet too large', reasonCode)
+            LOG.error('Could not connect (%s): Packet too large', reasonCode)
         elif reasonCode == 151:
-            LOG.error('Could not connect (%d): Quota exceeded', reasonCode)
+            LOG.error('Could not connect (%s): Quota exceeded', reasonCode)
         elif reasonCode == 154:
-            LOG.error('Could not connect (%d): Retain not supported', reasonCode)
+            LOG.error('Could not connect (%s): Retain not supported', reasonCode)
         elif reasonCode == 155:
-            LOG.error('Could not connect (%d): QoS not supported', reasonCode)
+            LOG.error('Could not connect (%s): QoS not supported', reasonCode)
         elif reasonCode == 156:
-            LOG.error('Could not connect (%d): Use another server', reasonCode)
+            LOG.error('Could not connect (%s): Use another server', reasonCode)
         elif reasonCode == 157:
-            LOG.error('Could not connect (%d): Server move', reasonCode)
+            LOG.error('Could not connect (%s): Server move', reasonCode)
         elif reasonCode == 159:
-            LOG.error('Could not connect (%d): Connection rate exceeded', reasonCode)
+            LOG.error('Could not connect (%s): Connection rate exceeded', reasonCode)
         else:
-            print('Could not connect: %d', reasonCode, file=sys.stderr)
+            print('Could not connect: %s', reasonCode, file=sys.stderr)
             sys.exit(1)
 
     def on_disconnect_callback(self, client, userdata, flags, reasonCode, properties):  # noqa: C901  # pylint: disable=too-many-branches,no-self-use
@@ -683,7 +683,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
         elif reasonCode == 160:
             LOG.error('Client disconnected: Maximum connect time')
         else:
-            LOG.error('Client unexpectedly disconnected (%d), trying to reconnect', reasonCode)
+            LOG.error('Client unexpectedly disconnected (%s), trying to reconnect', reasonCode)
 
     def on_subscribe_callback(self, mqttc, obj, mid, reasonCodes, properties):
         del mqttc  # unused
