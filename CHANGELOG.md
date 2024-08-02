@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 - No unreleased changes so far
-- 
+
 ## [0.49.1] - 2024-08-02
 ### Fixed
 - fix logging with new reasonCodes
