@@ -3,6 +3,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 - No unreleased changes so far
+- 
+## [0.49.1] - 2024-08-02
+### Fixed
+- fix logging with new reasonCodes
+- 
+### Added
+- Adds new attributes
+
+### Changed
+- Updated to paho-mqtt 2.1.0
+- Updated to python-dateutil to 2.9.0
+- Updated API to 0.60.4
 
 ## [0.49.0] - 2024-03-03
 ### Added
@@ -869,7 +881,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.49.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.49.1...HEAD
+[0.49.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.49.1
 [0.49.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.49.0
 [0.48.4]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.48.4
 [0.48.3]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.48.3
