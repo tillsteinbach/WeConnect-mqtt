@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.49.2] - 2024-09-13
+### Added
+- Adds several new attributes and status
+
+### Changed
+- Updated API to 0.60.5
+
 ## [0.49.1] - 2024-08-02
 ### Fixed
 - fix logging with new reasonCodes
