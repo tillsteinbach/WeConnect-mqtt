@@ -124,5 +124,4 @@ Please see the wiki [Wiki](https://github.com/tillsteinbach/WeConnect-mqtt/wiki)
 - [VWsFriend](https://github.com/tillsteinbach/VWsFriend): VWsFriend is a software to visualize and record statistics of your car and allows control via HomeKit
 
 ## Seat, Cupra, Skoda IV, ...
-In an effort to try to make WeConnect-MQTT also to work with latest generation of vehicles from other volkswagen brands I'm looking for users to temporarily share access to their accounts. If you are willing to support please send me a message.
-- Already tried: Cupra Born (The API looks a bit different, maybe it is older, I will check again in some weeks), thanks to the user initdebugs
+Now owning a Skoda vehicle I'm about to make a rewrite of this library called [CarConnectivity](https://github.com/tillsteinbach/CarConnectivity), I hope this will be ready for a first release in early 2025
