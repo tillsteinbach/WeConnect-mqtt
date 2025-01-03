@@ -540,7 +540,7 @@ class WeConnectMQTTClient(paho.mqtt.client.Client):  # pylint: disable=too-many-
             LOG.debug('%s%s, value changed: new value is: %s', self.prefix, element.getGlobalAddress(), convertedValue)
             self.publish(topic=f'{self.prefix}{element.getGlobalAddress()}', qos=1, retain=True, payload=convertedValue)
         elif flags & addressable.AddressableLeaf.ObserverEvent.DISABLED:
-            LOG.debug('%s%s, value is diabled', self.prefix, element.getGlobalAddress())
+            LOG.debug('%s%s, value is disabled', self.prefix, element.getGlobalAddress())
             self.publish(topic=f'{self.prefix}{element.getGlobalAddress()}', qos=1, retain=True, payload='')
 
     def convertValue(self, value):
