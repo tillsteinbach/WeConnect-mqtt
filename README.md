@@ -1,4 +1,11 @@
 # WeConnect-MQTT
+## WARNING:
+:warning: :warning: :warning:
+
+**WeConnect-MQTT will reach end of life this year. It will be repalced by [CarConnectivity-MQTT](https://github.com/tillsteinbach/CarConnectivity-plugin-mqtt) which will provide equal functionality but for more brands such as Volkswagen, Skoda, Seat, Cupra. Users should start to check if moving to [CarConnectivity-MQTT](https://github.com/tillsteinbach/CarConnectivity-plugin-mqtt) is an option.**
+
+:warning: :warning: :warning:
+
 [![GitHub sourcecode](https://img.shields.io/badge/Source-GitHub-green)](https://github.com/tillsteinbach/WeConnect-mqtt/)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/tillsteinbach/WeConnect-mqtt)](https://github.com/tillsteinbach/WeConnect-mqtt/releases/latest)
 [![GitHub](https://img.shields.io/github/license/tillsteinbach/WeConnect-mqtt)](https://github.com/tillsteinbach/WeConnect-mqtt/blob/master/LICENSE)
