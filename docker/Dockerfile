@@ -3,6 +3,7 @@ RUN apk add --update tzdata
 
 FROM python:3.12.0-alpine
 ARG VERSION
+ARG ARGS=""
 ENV USER=
 ENV PASSWORD=
 ENV BROKER_ADDRESS=
@@ -27,4 +28,8 @@ RUN apk --no-cache add --virtual build-dependencies build-base \
     && pip install weconnect-mqtt==${VERSION} \
     && apk del build-dependencies
 
-CMD weconnect-mqtt --username ${USER} --password ${PASSWORD} --mqttbroker ${BROKER_ADDRESS} ${ADDITIONAL_PARAMETERS}
+RUN if [ -n "${USER}" ]; then ARGS="${ARGS} --username ${USER}"; fi \
+    && if [ -n "${PASSWORD}" ]; then ARGS="${ARGS} --password ${PASSWORD}"; fi \
+    && if [ -n "${ADDITIONAL_PARAMETERS}" ]; then ARGS="${ARGS} ${ADDITIONAL_PARAMETERS}"; fi
+
+CMD weconnect-mqtt --mqttbroker ${BROKER_ADDRESS} ${ARGS}
