@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No unreleased changes so far
 
+## [0.49.3] - 2024-11-29
+### Fixed
+- Fixes login due to changes in the login form
+
 ## [0.49.2] - 2024-09-13
 ### Added
 - Adds several new attributes and status
@@ -888,7 +892,8 @@ Send empty message when topic is disabled
 ## [0.1.0] - 2021-05-27
 Initial release
 
-[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.49.2...HEAD
+[unreleased]: https://github.com/tillsteinbach/WeConnect-mqtt/compare/v0.49.3...HEAD
+[0.49.3]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.49.3
 [0.49.2]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.49.2
 [0.49.1]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.49.1
 [0.49.0]: https://github.com/tillsteinbach/WeConnect-mqtt/releases/tag/v0.49.0
